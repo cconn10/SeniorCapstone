@@ -1,4 +1,4 @@
-# Team Gamer (Placeholder)
+# Team Ekans Backwards
 
 ## Colin Conn conncf@mail.uc.edu
 ## Noah Shremshock shremsnt@mail.uc.edu
