@@ -4,7 +4,7 @@
 ### Noah Shremshock shremsnt@mail.uc.edu
 ### Advisor - Jillian Aurisano
 
-### Table of Contents
+## Table of Contents
 <details>
  <summary>
   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Appendix">Home</a>
