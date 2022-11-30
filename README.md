@@ -1,8 +1,8 @@
 # Team Ekans Backwards
 
-### Colin Conn conncf@mail.uc.edu
-### Noah Shremshock shremsnt@mail.uc.edu
-### Advisor - Jillian Aurisano
+#### Colin Conn conncf@mail.uc.edu
+#### Noah Shremshock shremsnt@mail.uc.edu
+#### Advisor - Jillian Aurisano aurisajm@ucmail.uc.edu
 
 ## Table of Contents
 <details>
