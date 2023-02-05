@@ -10,49 +10,32 @@ settings {
     "gamemodes": {
         "assault": {
             "enabledMaps": [],
-            "enableCompetitiveRules": true,
-            "gamemodeStartTrigger": "immediately",
-            "enableKillCam": false,
-            "roleLimit": "2OfEachRolePerTeam",
-            "enableSkins": false
+            "enableCompetitiveRules": true
         },
         "control": {
             "enabledMaps": [],
             "enableCompetitiveRules": true,
-            "gamemodeStartTrigger": "immediately",
-            "enableKillCam": false,
-            "roleLimit": "2OfEachRolePerTeam",
-            "scoreToWin": 3,
-            "enableSkins": false
-        },
-        "ffa": {
-            "enabled": false,
-            "gamemodeStartTrigger": "immediately",
-            "enableKillCam": false,
-            "roleLimit": "2OfEachRolePerTeam",
-            "enableSkins": false
+            "scoreToWin": 3
         },
         "escort": {
             "enabledMaps": [
                 "junkertown"
             ],
-            "enableCompetitiveRules": true,
-            "gamemodeStartTrigger": "immediately",
-            "enableKillCam": false,
-            "roleLimit": "2OfEachRolePerTeam",
-            "enableSkins": false
+            "enableCompetitiveRules": true
         },
         "hybrid": {
             "enabledMaps": [],
-            "enableCompetitiveRules": true,
-            "gamemodeStartTrigger": "immediately",
-            "enableKillCam": false,
-            "roleLimit": "2OfEachRolePerTeam",
-            "enableSkins": false
+            "enableCompetitiveRules": true
         },
         "push": {
             "enabledMaps": [],
             "enableCompetitiveRules": true
+        },
+        "general": {
+            "gamemodeStartTrigger": "immediately",
+            "enableKillCam": false,
+            "roleLimit": "1Tank2Offense2Support",
+            "enableSkins": false
         }
     }
 }
@@ -64,6 +47,8 @@ globalvar Team2Ready 1
 globalvar GameMode 2
 globalvar ScoreModified 3
 globalvar TournamentMode 4
+globalvar __currentMap____ 5
+globalvar __currentMap___ 6
 globalvar MapInfoLogged 12
 globalvar InfoDrawn 14
 globalvar MatchDelayAmount 15
@@ -95,6 +80,60 @@ subroutine PlayerDCInfoTeam2 3
 subroutine PlayerDCDvaTeam1 4
 subroutine PlayerDCDvaTeam2 5
 subroutine CreateSpectatorHUD 6
+
+
+rule "OverPy Map Detection":
+    if getCurrentMap() in [Map.AYUTTHAYA, Map.BLACK_FOREST, Map.BLACK_FOREST, Map.BLIZZ_WORLD, Map.BLIZZ_WORLD, Map.BUSAN, Map.BUSAN, Map.BUSAN, Map.CASTILLO, Map.CHATEAU_GUILLARD, Map.CHATEAU_GUILLARD, Map.CIRCUIT_ROYAL, Map.COLOSSEO, Map.DORADO, Map.ECOPOINT_ANTARCTICA, Map.ECOPOINT_ANTARCTICA, Map.EICHENWALDE, Map.EICHENWALDE, Map.ESPERANCA, Map.HANAMURA, Map.HANAMURA, Map.HAVANA, Map.HOLLYWOOD, Map.HOLLYWOOD, Map.HORIZON_LUNAR_COLONY, Map.ILIOS, Map.ILIOS, Map.ILIOS, Map.ILIOS, Map.JUNKENSTEIN, Map.JUNKERTOWN, Map.KANEZAKA, Map.KINGS_ROW, Map.KINGS_ROW, Map.LIJIANG_CONTROL_CENTER, Map.LIJIANG_CONTROL_CENTER, Map.LIJIANG_GARDEN, Map.LIJIANG_GARDEN, Map.LIJIANG_NIGHT_MARKET, Map.LIJIANG_NIGHT_MARKET, Map.LIJIANG_TOWER, Map.LIJIANG_TOWER, Map.MALEVENTO, Map.MIDTOWN, Map.NECROPOLIS, Map.NEPAL, Map.NEPAL, Map.NEPAL, Map.NEPAL, Map.NEPAL, Map.NEW_QUEEN_STREET, Map.NUMBANI, Map.OASIS, Map.OASIS, Map.OASIS, Map.OASIS, Map.PARAISO, Map.PARIS, Map.PETRA, Map.PRACTICE_RANGE, Map.RIALTO, Map.ROUTE66, Map.TEMPLE_OF_ANUBIS, Map.VOLSKAYA, Map.WATCHPOINT_GIBRALTAR, Map.WORKSHOP_CHAMBER, Map.WORKSHOP_EXPANSE, Map.WORKSHOP_EXPANSE, Map.WORKSHOP_GREEN_SCREEN, Map.WORKSHOP_ISLAND, Map.WORKSHOP_ISLAND, Map.SHAMBALI_MONASTERY]:
+        __currentMap___ = getCurrentMap()
+        return
+    __currentMap___ = raycast(vect(500, 100, 500), vect(-500, -100, -500), null, null, false).getHitPosition()
+    if __currentMap___ == vect(0, 0, 0) or __currentMap___ == vect(-500, -100, -500):
+        __currentMap___ = raycast(vect(30, 5, 0), vect(-30, -10, -10), null, null, false).getHitPosition()
+        if __currentMap___ == vect(-30, -10, -10):
+            __currentMap___ = raycast(vect(200, 20, 100), vect(100, -100, -100), null, null, false).getHitPosition()
+            if __currentMap___ == vect(100, -100, -100):
+                __currentMap___ = raycast(vect(300, 20, -100), vect(300, -100, 100), null, null, false).getHitPosition()
+                if __currentMap___ == vect(300, -100, 100):
+                    __currentMap___ = raycast(vect(50, 100, -150), vect(-50, -100, -160), null, null, false).getHitPosition()
+                    if __currentMap___ == vect(-50, -100, -160):
+                        __currentMap___ = raycast(vect(0, 300, 340), vect(0, -100, -300), null, null, false).getHitPosition()
+                        if __currentMap___ == vect(0, -100, -300):
+                            __currentMap___ = raycast(vect(140, 10, -240), vect(200, -10, -300), null, null, false).getHitPosition()
+                            if __currentMap___ == vect(200, -10, -300):
+                                __currentMap___ = raycast(vect(-180, 30, 60), vect(-180, -50, -60), null, null, false).getHitPosition()
+    __currentMap___ = 100 * ceil(__currentMap___.y) + 10 * round(__currentMap___.x) + floor(__currentMap___.z)
+    if __currentMap___ == 10121:
+        __currentMap___ = raycast(vect(-60, 20, -60), vect(60, -10, 60), null, null, false).getHitPosition()
+        if __currentMap___ == vect(60, -10, 60):
+            __currentMap___ = raycast(vect(-180, -70, 60), vect(-180, -100, -60), null, null, false).getHitPosition()
+        __currentMap___ = 100 * ceil(__currentMap___.y) + 10 * round(__currentMap___.x) + floor(__currentMap___.z)
+
+
+rule "OverPy Map Detection":
+    if __currentMap___ in [Map.AYUTTHAYA, Map.BLACK_FOREST, 2148, Map.BLIZZ_WORLD, 1228, Map.BUSAN, 3206, -6860, Map.CASTILLO, Map.CHATEAU_GUILLARD, 3439, Map.CIRCUIT_ROYAL, Map.COLOSSEO, Map.DORADO, Map.ECOPOINT_ANTARCTICA, -1130, Map.EICHENWALDE, 565, Map.ESPERANCA, Map.HANAMURA, 1848, Map.HAVANA, Map.HOLLYWOOD, 1505, Map.HORIZON_LUNAR_COLONY, Map.ILIOS, 1459, 8669, -2957, Map.JUNKENSTEIN, Map.JUNKERTOWN, Map.KANEZAKA, Map.KINGS_ROW, 742, Map.LIJIANG_CONTROL_CENTER, 28714, Map.LIJIANG_GARDEN, 4714, Map.LIJIANG_NIGHT_MARKET, -1429, Map.LIJIANG_TOWER, 3676, Map.MALEVENTO, Map.MIDTOWN, Map.NECROPOLIS, Map.NEPAL, -11860, 1362, -9677, Map.NEPAL, Map.NEW_QUEEN_STREET, Map.NUMBANI, Map.OASIS, 6920, 2159, 345, Map.PARAISO, Map.PARIS, Map.PETRA, Map.PRACTICE_RANGE, Map.RIALTO, Map.ROUTE66, Map.TEMPLE_OF_ANUBIS, Map.VOLSKAYA, Map.WATCHPOINT_GIBRALTAR, Map.WORKSHOP_CHAMBER, Map.WORKSHOP_EXPANSE, 96, Map.WORKSHOP_GREEN_SCREEN, Map.WORKSHOP_ISLAND, 196, Map.SHAMBALI_MONASTERY]:
+        __currentMap____ = __currentMap___
+        return
+    __currentMap____ = raycast(vect(500, 100, 500), vect(-500, -100, -500), null, null, false).getHitPosition()
+    if __currentMap____ == vect(0, 0, 0) or __currentMap____ == vect(-500, -100, -500):
+        __currentMap____ = raycast(vect(30, 5, 0), vect(-30, -10, -10), null, null, false).getHitPosition()
+        if __currentMap____ == vect(-30, -10, -10):
+            __currentMap____ = raycast(vect(200, 20, 100), vect(100, -100, -100), null, null, false).getHitPosition()
+            if __currentMap____ == vect(100, -100, -100):
+                __currentMap____ = raycast(vect(300, 20, -100), vect(300, -100, 100), null, null, false).getHitPosition()
+                if __currentMap____ == vect(300, -100, 100):
+                    __currentMap____ = raycast(vect(50, 100, -150), vect(-50, -100, -160), null, null, false).getHitPosition()
+                    if __currentMap____ == vect(-50, -100, -160):
+                        __currentMap____ = raycast(vect(0, 300, 340), vect(0, -100, -300), null, null, false).getHitPosition()
+                        if __currentMap____ == vect(0, -100, -300):
+                            __currentMap____ = raycast(vect(140, 10, -240), vect(200, -10, -300), null, null, false).getHitPosition()
+                            if __currentMap____ == vect(200, -10, -300):
+                                __currentMap____ = raycast(vect(-180, 30, 60), vect(-180, -50, -60), null, null, false).getHitPosition()
+    __currentMap____ = 100 * ceil(__currentMap____.y) + 10 * round(__currentMap____.x) + floor(__currentMap____.z)
+    if __currentMap____ == 10121:
+        __currentMap____ = raycast(vect(-60, 20, -60), vect(60, -10, 60), null, null, false).getHitPosition()
+        if __currentMap____ == vect(60, -10, 60):
+            __currentMap____ = raycast(vect(-180, -70, 60), vect(-180, -100, -60), null, null, false).getHitPosition()
+        __currentMap____ = 100 * ceil(__currentMap____.y) + 10 * round(__currentMap____.x) + floor(__currentMap____.z)
 
 
 rule "Remove Assembling Heroes":
@@ -178,7 +217,7 @@ rule "Ultimate: +Ns match time while in setup":
     eventPlayer.AddTimeCD = 1
     chase(eventPlayer.AddTimeCD, 0, duration=1, ChaseReeval.DESTINATION_AND_DURATION)
     setMatchTime(getMatchTime() + MatchDelayAmount)
-    smallMessage(getAllPlayers(), l"{0} {1}".format(eventPlayer, "added {0} seconds".format(MatchDelayAmount)))
+    smallMessage(getAllPlayers(), "{0} {1}".format(eventPlayer, "added {0} seconds".format(MatchDelayAmount)))
     if eventPlayer.getTeam() == Team.1:
         Team1Ready = "Not Ready"
     else:
@@ -198,17 +237,17 @@ rule "Crouch + Interact: Ready/Unready":
     if eventPlayer.getTeam() == Team.1:
         if Team1Ready == "Not Ready":
             Team1Ready = "Ready"
-            smallMessage(getAllPlayers(), l"{0} {1}".format(eventPlayer, "readied their team"))
+            smallMessage(getAllPlayers(), "{0} {1}".format(eventPlayer, "readied their team"))
         else:
             Team1Ready = "Not Ready"
-            smallMessage(getAllPlayers(), l"{0} {1}".format(eventPlayer, "unreadied their team"))
+            smallMessage(getAllPlayers(), "{0} {1}".format(eventPlayer, "unreadied their team"))
     elif eventPlayer.getTeam() == Team.2:
         if Team2Ready == "Not Ready":
             Team2Ready = "Ready"
-            smallMessage(getAllPlayers(), l"{0} {1}".format(eventPlayer, "readied their team"))
+            smallMessage(getAllPlayers(), "{0} {1}".format(eventPlayer, "readied their team"))
         else:
             Team2Ready = "Not Ready"
-            smallMessage(getAllPlayers(), l"{0} {1}".format(eventPlayer, "unreadied their team"))
+            smallMessage(getAllPlayers(), "{0} {1}".format(eventPlayer, "unreadied their team"))
 
 
 rule "First attack done":
@@ -273,47 +312,46 @@ rule "Defense Map Teleport":
     @Condition eventPlayer.isAlive() == true
     @Condition eventPlayer.getCurrentHero() == true
     
-    if getCurrentMap() == Map.BLIZZ_WORLD:
+    if __currentMap____ == Map.BLIZZ_WORLD:
         eventPlayer.teleport(vect(-8.171, 3.824, 65.861))
-    elif getCurrentMap() == Map.EICHENWALDE:
+    elif __currentMap____ == Map.EICHENWALDE:
         eventPlayer.teleport(vect(13.226, 12.981, -83.655))
-    elif getCurrentMap() == Map.HOLLYWOOD:
+    elif __currentMap____ == Map.HOLLYWOOD:
         eventPlayer.teleport(vect(-19.248, 8.007, -9.802))
-    elif getCurrentMap() == Map.KINGS_ROW:
+    elif __currentMap____ == Map.KINGS_ROW:
         eventPlayer.teleport(vect(-37.185, 10.346, -15.058))
-    elif getCurrentMap() == Map.MIDTOWN:
+    elif __currentMap____ == Map.MIDTOWN:
         eventPlayer.teleport(vect(9.46, 4.72, 29.37))
-    elif getCurrentMap() == Map.NUMBANI:
+    elif __currentMap____ == Map.NUMBANI:
         eventPlayer.teleport(vect(93.044, 5.53, -22.723))
-    elif getCurrentMap() == Map.PARAISO:
+    elif __currentMap____ == Map.PARAISO:
         eventPlayer.teleport(vect(-18.59, 5.75, 19.54))
-    elif getCurrentMap() == Map.HANAMURA:
+    elif __currentMap____ == Map.HANAMURA:
         eventPlayer.teleport(vect(13.079, 1.346, -24.267))
-    elif getCurrentMap() == Map.HORIZON_LUNAR_COLONY:
+    elif __currentMap____ == Map.HORIZON_LUNAR_COLONY:
         eventPlayer.teleport(vect(42.356, 15.84, -79.798))
-    elif getCurrentMap() == Map.PARIS:
+    elif __currentMap____ == Map.PARIS:
         eventPlayer.teleport(vect(-40.379, 16.5, -14.259))
-    elif getCurrentMap() == Map.TEMPLE_OF_ANUBIS:
+    elif __currentMap____ == Map.TEMPLE_OF_ANUBIS:
         eventPlayer.teleport(vect(-23.909, 3.312, 46.94))
-    elif getCurrentMap() == Map.VOLSKAYA:
+    elif __currentMap____ == Map.VOLSKAYA:
         eventPlayer.teleport(vect(-35.545, -1.433, 73.561))
-    elif getCurrentMap() == Map.CIRCUIT_ROYAL:
-        eventPlayer.teleport(vect(-22.30, 11.00, -6.26))
-    elif getCurrentMap() == Map.DORADO:
+    elif __currentMap____ == Map.CIRCUIT_ROYAL:
+        eventPlayer.teleport(vect(-22.3, 11, -6.26))
+    elif __currentMap____ == Map.DORADO:
         eventPlayer.teleport(vect(57.088, 9.241, -16.884))
-    elif getCurrentMap() == Map.HAVANA:
+    elif __currentMap____ == Map.HAVANA:
         eventPlayer.teleport(vect(-18.059, 9.184, -70.117))
-    elif getCurrentMap() == Map.JUNKERTOWN:
+    elif __currentMap____ == Map.JUNKERTOWN:
         eventPlayer.teleport(vect(-28.382, 14.223, -68.289))
-    elif getCurrentMap() == Map.RIALTO:
+    elif __currentMap____ == Map.SHAMBALI_MONASTERY:
+        eventPlayer.teleport(vect(-13.09, 15, 60.94))
+    elif __currentMap____ == Map.RIALTO:
         eventPlayer.teleport(vect(55.603, 2.452, -44.947))
-    elif getCurrentMap() == Map.ROUTE66:
+    elif __currentMap____ == Map.ROUTE66:
         eventPlayer.teleport(vect(33.662, 10.325, -5.514))
-    elif getCurrentMap() == Map.WATCHPOINT_GIBRALTAR:
+    elif __currentMap____ == Map.WATCHPOINT_GIBRALTAR:
         eventPlayer.teleport(vect(32.488, 4.692, -71.941))
-    elif getCurrentMap() == Map.CIRCUIT_ROYAL:
-        
-    
 
 
 rule "DC Value Tracking - Team 1":
@@ -333,17 +371,17 @@ def PlayerDCInfoTeam1():
     @Name "DC Value Tracking - Team 1 Subroutine"
     
     if eventPlayer.hasSpawned():
-        if ShouldRestore[0 + eventPlayer.getSlot()] >= 0:
+        if ShouldRestore[eventPlayer.getSlot()] >= 0:
             if eventPlayer.isAlive():
-                UltCharges[0 + eventPlayer.getSlot()] = eventPlayer.getUltCharge()
-                Heroes[0 + eventPlayer.getSlot()] = eventPlayer.getCurrentHero()
-                Positions[0 + eventPlayer.getSlot()] = eventPlayer.getPosition()
-                Cooldowns1[0 + eventPlayer.getSlot()] = eventPlayer.getAbilityCooldown(Button.ABILITY_1)
-                Cooldowns2[0 + eventPlayer.getSlot()] = eventPlayer.getAbilityCooldown(Button.ABILITY_2)
-                DVaRestore[0 + eventPlayer.getSlot()] = (eventPlayer.getUltCharge() if eventPlayer.getMaxHealth() > 200 else DVaRestore[0 + eventPlayer.getSlot()]) if eventPlayer.getCurrentHero() == Hero.DVA else -1
-                ShouldRestore[0 + eventPlayer.getSlot()] = eventPlayer.getNormalizedHealth()
+                UltCharges[eventPlayer.getSlot()] = eventPlayer.getUltCharge()
+                Heroes[eventPlayer.getSlot()] = eventPlayer.getCurrentHero()
+                Positions[eventPlayer.getSlot()] = eventPlayer.getPosition()
+                Cooldowns1[eventPlayer.getSlot()] = eventPlayer.getAbilityCooldown(Button.ABILITY_1)
+                Cooldowns2[eventPlayer.getSlot()] = eventPlayer.getAbilityCooldown(Button.ABILITY_2)
+                DVaRestore[eventPlayer.getSlot()] = (eventPlayer.getUltCharge() if eventPlayer.getMaxHealth() > 200 else DVaRestore[eventPlayer.getSlot()]) if eventPlayer.getCurrentHero() == Hero.DVA else -1
+                ShouldRestore[eventPlayer.getSlot()] = eventPlayer.getNormalizedHealth()
             else:
-                ShouldRestore[0 + eventPlayer.getSlot()] = 0
+                ShouldRestore[eventPlayer.getSlot()] = 0
 
 
 rule "DC Value Tracking - Team 2":
@@ -385,18 +423,18 @@ rule "Player Reconnected - Team 1":
     
     waitUntil(eventPlayer.hasSpawned(), 10)
     wait(0.1)
-    if eventPlayer.getCurrentHero() == Heroes[0 + eventPlayer.getSlot()]:
-        eventPlayer.setUltCharge(UltCharges[0 + eventPlayer.getSlot()])
-        if ShouldRestore[0 + eventPlayer.getSlot()] > 0:
-            ShouldRestore[0 + eventPlayer.getSlot()] = 0 - (ShouldRestore[0 + eventPlayer.getSlot()])
-            eventPlayer.startForcingPosition(Positions[0 + eventPlayer.getSlot()], false)
+    if eventPlayer.getCurrentHero() == Heroes[eventPlayer.getSlot()]:
+        eventPlayer.setUltCharge(UltCharges[eventPlayer.getSlot()])
+        if ShouldRestore[eventPlayer.getSlot()] > 0:
+            ShouldRestore[eventPlayer.getSlot()] = 0 - ShouldRestore[eventPlayer.getSlot()]
+            eventPlayer.startForcingPosition(Positions[eventPlayer.getSlot()], false)
             wait(0.1)
             eventPlayer.stopForcingPosition()
             PlayerDCDvaTeam1()
-            eventPlayer.setHealth((0 - (ShouldRestore[0 + eventPlayer.getSlot()])) * eventPlayer.getMaxHealth())
-            eventPlayer.setAbilityCooldown(Button.ABILITY_1, Cooldowns1[0 + eventPlayer.getSlot()])
-            eventPlayer.setAbilityCooldown(Button.ABILITY_2, Cooldowns2[0 + eventPlayer.getSlot()])
-            ShouldRestore[0 + eventPlayer.getSlot()] = 0 - (ShouldRestore[0 + eventPlayer.getSlot()])
+            eventPlayer.setHealth((0 - ShouldRestore[eventPlayer.getSlot()]) * eventPlayer.getMaxHealth())
+            eventPlayer.setAbilityCooldown(Button.ABILITY_1, Cooldowns1[eventPlayer.getSlot()])
+            eventPlayer.setAbilityCooldown(Button.ABILITY_2, Cooldowns2[eventPlayer.getSlot()])
+            ShouldRestore[eventPlayer.getSlot()] = 0 - ShouldRestore[eventPlayer.getSlot()]
 
 
 rule "Player Reconnected - Team 2":
@@ -425,12 +463,12 @@ def PlayerDCDvaTeam1():
     @Name "Player Reconnected - Team 1 DVa"
     
     if eventPlayer.getCurrentHero() == Hero.DVA:
-        if DVaRestore[0 + eventPlayer.getSlot()] >= 0:
-            eventPlayer.setUltCharge(DVaRestore[0 + eventPlayer.getSlot()])
+        if DVaRestore[eventPlayer.getSlot()] >= 0:
+            eventPlayer.setUltCharge(DVaRestore[eventPlayer.getSlot()])
             wait(0.1)
             damage(eventPlayer, null, 1000)
             wait(1.6)
-            eventPlayer.setUltCharge(UltCharges[0 + eventPlayer.getSlot()])
+            eventPlayer.setUltCharge(UltCharges[eventPlayer.getSlot()])
 
 
 def PlayerDCDvaTeam2():
@@ -457,8 +495,8 @@ rule "Log Map Info":
     @Condition MapInfoLogged == false
     
     MapInfoLogged = true
-    printLog("{0},{1},{2}".format(getCurrentMap(), getPlayersInSlot(0, Team.1).getTeam(), "{0},{1}".format(getPlayersInSlot(0, Team.2).getTeam(), getCurrentObjective())))
-    printLog("{0},{1},{2}".format("{0},{1},{2}".format(getPlayersInSlot(0, Team.1), getPlayersInSlot(1, Team.1), getPlayersInSlot(2, Team.1)), "{0},{1},{2}".format("{0},{1},{2}".format(getPlayersInSlot(3, Team.1), getPlayersInSlot(4, Team.1), getPlayersInSlot(5, Team.1)), getPlayersInSlot(0, Team.2), getPlayersInSlot(1, Team.2)), "{0},{1}".format("{0},{1},{2}".format(getPlayersInSlot(2, Team.2), getPlayersInSlot(3, Team.2), getPlayersInSlot(4, Team.2)), getPlayersInSlot(5, Team.2))))
+    printLog("|{0}|{1}|{2}|{3}".format(__currentMap____, GameMode , getPlayersInSlot(0, Team.1).getTeam(), "{0}|{1}".format(getPlayersInSlot(0, Team.2).getTeam(), getCurrentObjective())))
+    printLog("|{0}|{1}|{2}".format(getPlayersInSlot(0, Team.1), getPlayersInSlot(1, Team.1), "{0}|{1}|{2}".format(getPlayersInSlot(2, Team.1), getPlayersInSlot(3, Team.1), "{0}|{1}|{2}".format(getPlayersInSlot(4, Team.1), getPlayersInSlot(0, Team.2), "{0}|{1}|{2}".format(getPlayersInSlot(1, Team.2), getPlayersInSlot(2, Team.2), "{0}|{1}".format(getPlayersInSlot(3, Team.2), getPlayersInSlot(4, Team.2)))))))
 
 
 rule "Global Logging - Ongoing":
@@ -477,23 +515,25 @@ def LogMapGamemodeInfo():
     
     if getCurrentGamemode() == Gamemode.CONTROL:
         #time, team 1 percentage, team 2 percentage
-        printLog("{0},{1},{2}".format(getTotalTimeElapsed(), getControlScorePercentage(Team.1), getControlScorePercentage(Team.2)))
+        printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), getControlScorePercentage(Team.1), getControlScorePercentage(Team.2)))
     elif getCurrentGamemode() == Gamemode.ESCORT:
         #time, team 1 attacking (else is team 2), payload progress percentage
-        printLog("{0},{1},{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getPayloadProgressPercentage()))
+        printLog("|{0}|{1}|{2}|{3}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getPayloadProgressPercentage(), getPayloadPosition()))
     elif getCurrentGamemode() == Gamemode.ASSAULT:
         #time, team 1 attacking (else is team 2), point capture percentage
-        printLog("{0},{1},{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getCapturePercentage()))
+        printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getCapturePercentage()))
     elif getCurrentGamemode() == Gamemode.HYBRID:
-        if isTeamOnOffense(Team.1) == true:
+        if isTeamOnOffense(Team.1):
             LogHybridInfo()
         else:
             if teamScore(Team.2) >= 1:
                 #time, team 1 attacking (else is team 2), payload progress percentage
-                printLog("{0},{1},{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getPayloadProgressPercentage()))
+                printLog("|{0}|{1}|{2}|{3}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getPayloadProgressPercentage(), getPayloadPosition()))
             else:
                 #time, team 1 attacking (else is team 2), point capture percentage
-                printLog("{0},{1},{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getCapturePercentage()))
+                printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getCapturePercentage()))
+    elif getCurrentGamemode() == Gamemode.PUSH:
+        printLog("|{0}|{1}".format(getTotalTimeElapsed(), getPayloadPosition()))
 
 
 def LogHybridInfo():
@@ -501,10 +541,10 @@ def LogHybridInfo():
     
     if teamScore(Team.1) >= 1:
         #time, team 1 attacking (else is team 2), payload progress percentage
-        printLog("{0},{1},{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getPayloadProgressPercentage()))
+        printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getPayloadProgressPercentage()))
     else:
         #time, team 1 attacking (else is team 2), point capture percentage
-        printLog("{0},{1},{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getCapturePercentage()))
+        printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getCapturePercentage()))
 
 
 rule "Player Logging - Ongoing":
@@ -513,7 +553,7 @@ rule "Player Logging - Ongoing":
     @Condition MapInfoLogged == true
     @Condition isMatchBetweenRounds() == false
     
-    printLog("{0},{1},{2}".format(getTotalTimeElapsed(), eventPlayer, "{0},{1},{2}".format(eventPlayer.getCurrentHero(), eventPlayer.getStatistic(Stat.HERO_DAMAGE_DEALT), "{0},{1},{2}".format(eventPlayer.getStatistic(Stat.BARRIER_DAMAGE_DEALT), eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED), "{0},{1},{2}".format(eventPlayer.getStatistic(Stat.DAMAGE_TAKEN), eventPlayer.getStatistic(Stat.DEATHS), "{0},{1},{2}".format(eventPlayer.getStatistic(Stat.ELIMINATIONS), eventPlayer.getStatistic(Stat.FINAL_BLOWS), "{0},{1},{2}".format(eventPlayer.getStatistic(Stat.ENVIRONMENTAL_DEATHS), eventPlayer.getStatistic(Stat.ENVIRONMENTAL_KILLS), "{0},{1},{2}".format(eventPlayer.getStatistic(Stat.HEALING_DEALT), eventPlayer.getStatistic(Stat.OBJECTIVE_KILLS), "{0},{1},{2}".format(eventPlayer.getStatistic(Stat.SOLO_KILLS), eventPlayer.getStatistic(Stat.ULTIMATES_EARNED), "{0},{1},{2}".format(eventPlayer.getStatistic(Stat.ULTIMATES_USED), eventPlayer.getHeroStatistic(getAllHeroes(), HeroStat.HEALING_RECEIVED), "{0},{1},{2}".format(eventPlayer.getUltCharge(), eventPlayer.getPlayerClosestToReticle(Team.ALL), "{0},{1},{2}".format(eventPlayer.getPosition(), eventPlayer.getTeam(), "{0},{1},{2}".format(eventPlayer.getAbilityCooldown(Button.ABILITY_1), eventPlayer.getAbilityCooldown(Button.ABILITY_2), eventPlayer.getMaxHealth())))))))))))))
+    printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), eventPlayer, "{0}|{1}|{2}".format(eventPlayer.getCurrentHero(), eventPlayer.getStatistic(Stat.HERO_DAMAGE_DEALT), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.BARRIER_DAMAGE_DEALT), eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.DAMAGE_TAKEN), eventPlayer.getStatistic(Stat.DEATHS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.ELIMINATIONS), eventPlayer.getStatistic(Stat.FINAL_BLOWS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.ENVIRONMENTAL_DEATHS), eventPlayer.getStatistic(Stat.ENVIRONMENTAL_KILLS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.HEALING_DEALT), eventPlayer.getStatistic(Stat.OBJECTIVE_KILLS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.SOLO_KILLS), eventPlayer.getStatistic(Stat.ULTIMATES_EARNED), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.ULTIMATES_USED), eventPlayer.getHeroStatistic(getAllHeroes(), HeroStat.HEALING_RECEIVED), "{0}|{1}|{2}".format(eventPlayer.getUltCharge(), eventPlayer.getPlayerClosestToReticle(Team.ALL), "{0}|{1}|{2}".format(eventPlayer.getPosition(), eventPlayer.getTeam(), "{0}|{1}|{2}".format(eventPlayer.getAbilityCooldown(Button.ABILITY_1), eventPlayer.getAbilityCooldown(Button.ABILITY_2), "{0}|{1}".format(eventPlayer.getMaxHealth(), eventPlayer.getFacingDirection()))))))))))))))
     wait(1)
     #(do at end)
     if isGameInProgress():
@@ -524,7 +564,7 @@ rule "Log Event - FB":
     @Event playerDealtFinalBlow
     @Condition isGameInProgress() == true
     
-    printLog("{0},FinalBlow,{1},{2}".format(getTotalTimeElapsed(), eventPlayer, "{0},{1}".format(victim, eventAbility)))
+    printLog("|{0}|FinalBlow|{1}|{2}".format(getTotalTimeElapsed(), eventPlayer, "{0}|{1}".format(victim, eventAbility)))
 
 
 rule "Log Event - PD":
@@ -532,7 +572,7 @@ rule "Log Event - PD":
     @Condition isGameInProgress() == true
     @Condition (eventWasEnvironment or attacker == eventPlayer) == true
     
-    printLog("{0},Suicide,{1}".format(getTotalTimeElapsed(), eventPlayer))
+    printLog("|{0}|Suicide|{1}".format(getTotalTimeElapsed(), eventPlayer))
 
 
 rule "Log Event - Resurrect":
@@ -543,7 +583,7 @@ rule "Log Event - Resurrect":
     @Condition teamHasHero(Hero.MERCY, eventPlayer.getTeam()) == true
     @Condition getPlayersOnHero(Hero.MERCY, eventPlayer.getTeam())[0].getAbilityCooldown(Button.ABILITY_2) >= 5
     
-    printLog("{0},Resurrected,{1}".format(getTotalTimeElapsed(), eventPlayer))
+    printLog("|{0}|Resurrected|{1}".format(getTotalTimeElapsed(), eventPlayer))
 
 
 rule "Log Event - Echo Duplicate Start":
@@ -553,7 +593,7 @@ rule "Log Event - Echo Duplicate Start":
     @Condition eventPlayer.isDuplicatingAHero() == true
     @Condition eventPlayer.IsUlting == false
     
-    printLog("{0},DuplicatingStart,{1},{2}".format(getTotalTimeElapsed(), eventPlayer, eventPlayer.getHeroOfDuplication()))
+    printLog("|{0}|DuplicatingStart|{1}|{2}".format(getTotalTimeElapsed(), eventPlayer, eventPlayer.getHeroOfDuplication()))
     eventPlayer.IsUlting = true
 
 
@@ -564,7 +604,7 @@ rule "Log Event - Echo Duplicate End":
     @Condition eventPlayer.isDuplicatingAHero() == false
     @Condition eventPlayer.IsUlting == true
     
-    printLog("{0},DuplicatingEnd,{1}".format(getTotalTimeElapsed(), eventPlayer))
+    printLog("|{0}|DuplicatingEnd|{1}".format(getTotalTimeElapsed(), eventPlayer))
     eventPlayer.IsUlting = false
 
 
