@@ -32,14 +32,14 @@ class PlayerPaths {
     
 
         console.log(d3.extent(vis.data, d => d.x))
-        console.log(d3.extent(vis.data, d => d.y))
+        console.log(d3.extent(vis.data, d => d.z))
 
         const xScale = d3.scaleLinear()
             .domain(d3.extent(vis.data, d => d.x))
             .range([0, vis.width]);
     
         const yScale = d3.scaleLinear()
-            .domain(d3.extent(vis.data, d => d.y))
+            .domain(d3.extent(vis.data, d => d.z))
             .range([0, vis.height]);
     
         const xAxis = d3.axisBottom(xScale)
@@ -56,7 +56,7 @@ class PlayerPaths {
     
         const line = d3.line()
             .x(d => xScale(d.x))
-            .y(d => yScale(d.y))
+            .y(d => yScale(d.z))
             .curve(d3.curveLinearClosed);
     
         g.append('path')

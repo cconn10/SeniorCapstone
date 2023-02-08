@@ -9,29 +9,25 @@ settings {
     },
     "gamemodes": {
         "assault": {
-            "enabledMaps": [],
-            "enableCompetitiveRules": true
+            "enabledMaps": []
         },
         "control": {
             "enabledMaps": [],
-            "enableCompetitiveRules": true,
             "scoreToWin": 3
         },
         "escort": {
             "enabledMaps": [
                 "junkertown"
-            ],
-            "enableCompetitiveRules": true
+            ]
         },
         "hybrid": {
-            "enabledMaps": [],
-            "enableCompetitiveRules": true
+            "enabledMaps": []
         },
         "push": {
-            "enabledMaps": [],
-            "enableCompetitiveRules": true
+            "enabledMaps": []
         },
         "general": {
+            "enableCompetitiveRules": true,
             "gamemodeStartTrigger": "immediately",
             "enableKillCam": false,
             "roleLimit": "1Tank2Offense2Support",
@@ -47,8 +43,9 @@ globalvar Team2Ready 1
 globalvar GameMode 2
 globalvar ScoreModified 3
 globalvar TournamentMode 4
-globalvar __currentMap____ 5
-globalvar __currentMap___ 6
+globalvar __currentMap_____ 5
+globalvar __currentMap____ 6
+globalvar __currentMap___ 7
 globalvar MapInfoLogged 12
 globalvar InfoDrawn 14
 globalvar MatchDelayAmount 15
@@ -110,7 +107,7 @@ rule "OverPy Map Detection":
 
 
 rule "OverPy Map Detection":
-    if __currentMap___ in [Map.AYUTTHAYA, Map.BLACK_FOREST, 2148, Map.BLIZZ_WORLD, 1228, Map.BUSAN, 3206, -6860, Map.CASTILLO, Map.CHATEAU_GUILLARD, 3439, Map.CIRCUIT_ROYAL, Map.COLOSSEO, Map.DORADO, Map.ECOPOINT_ANTARCTICA, -1130, Map.EICHENWALDE, 565, Map.ESPERANCA, Map.HANAMURA, 1848, Map.HAVANA, Map.HOLLYWOOD, 1505, Map.HORIZON_LUNAR_COLONY, Map.ILIOS, 1459, 8669, -2957, Map.JUNKENSTEIN, Map.JUNKERTOWN, Map.KANEZAKA, Map.KINGS_ROW, 742, Map.LIJIANG_CONTROL_CENTER, 28714, Map.LIJIANG_GARDEN, 4714, Map.LIJIANG_NIGHT_MARKET, -1429, Map.LIJIANG_TOWER, 3676, Map.MALEVENTO, Map.MIDTOWN, Map.NECROPOLIS, Map.NEPAL, -11860, 1362, -9677, Map.NEPAL, Map.NEW_QUEEN_STREET, Map.NUMBANI, Map.OASIS, 6920, 2159, 345, Map.PARAISO, Map.PARIS, Map.PETRA, Map.PRACTICE_RANGE, Map.RIALTO, Map.ROUTE66, Map.TEMPLE_OF_ANUBIS, Map.VOLSKAYA, Map.WATCHPOINT_GIBRALTAR, Map.WORKSHOP_CHAMBER, Map.WORKSHOP_EXPANSE, 96, Map.WORKSHOP_GREEN_SCREEN, Map.WORKSHOP_ISLAND, 196, Map.SHAMBALI_MONASTERY]:
+    if __currentMap___ in [Map.AYUTTHAYA, Map.BLACK_FOREST, Map.BLACK_FOREST, Map.BLIZZ_WORLD, Map.BLIZZ_WORLD, Map.BUSAN, Map.BUSAN, Map.BUSAN, Map.CASTILLO, Map.CHATEAU_GUILLARD, Map.CHATEAU_GUILLARD, Map.CIRCUIT_ROYAL, Map.COLOSSEO, Map.DORADO, Map.ECOPOINT_ANTARCTICA, Map.ECOPOINT_ANTARCTICA, Map.EICHENWALDE, Map.EICHENWALDE, Map.ESPERANCA, Map.HANAMURA, Map.HANAMURA, Map.HAVANA, Map.HOLLYWOOD, Map.HOLLYWOOD, Map.HORIZON_LUNAR_COLONY, Map.ILIOS, Map.ILIOS, Map.ILIOS, Map.ILIOS, Map.JUNKENSTEIN, Map.JUNKERTOWN, Map.KANEZAKA, Map.KINGS_ROW, Map.KINGS_ROW, Map.LIJIANG_CONTROL_CENTER, Map.LIJIANG_CONTROL_CENTER, Map.LIJIANG_GARDEN, Map.LIJIANG_GARDEN, Map.LIJIANG_NIGHT_MARKET, Map.LIJIANG_NIGHT_MARKET, Map.LIJIANG_TOWER, Map.LIJIANG_TOWER, Map.MALEVENTO, Map.MIDTOWN, Map.NECROPOLIS, Map.NEPAL, Map.NEPAL, Map.NEPAL, Map.NEPAL, Map.NEPAL, Map.NEW_QUEEN_STREET, Map.NUMBANI, Map.OASIS, Map.OASIS, Map.OASIS, Map.OASIS, Map.PARAISO, Map.PARIS, Map.PETRA, Map.PRACTICE_RANGE, Map.RIALTO, Map.ROUTE66, Map.TEMPLE_OF_ANUBIS, Map.VOLSKAYA, Map.WATCHPOINT_GIBRALTAR, Map.WORKSHOP_CHAMBER, Map.WORKSHOP_EXPANSE, Map.WORKSHOP_EXPANSE, Map.WORKSHOP_GREEN_SCREEN, Map.WORKSHOP_ISLAND, Map.WORKSHOP_ISLAND, Map.SHAMBALI_MONASTERY]:
         __currentMap____ = __currentMap___
         return
     __currentMap____ = raycast(vect(500, 100, 500), vect(-500, -100, -500), null, null, false).getHitPosition()
@@ -134,6 +131,33 @@ rule "OverPy Map Detection":
         if __currentMap____ == vect(60, -10, 60):
             __currentMap____ = raycast(vect(-180, -70, 60), vect(-180, -100, -60), null, null, false).getHitPosition()
         __currentMap____ = 100 * ceil(__currentMap____.y) + 10 * round(__currentMap____.x) + floor(__currentMap____.z)
+
+
+rule "OverPy Map Detection":
+    if __currentMap____ in [Map.AYUTTHAYA, Map.BLACK_FOREST, 2148, Map.BLIZZ_WORLD, 1228, Map.BUSAN, 3206, -6860, Map.CASTILLO, Map.CHATEAU_GUILLARD, 3439, Map.CIRCUIT_ROYAL, Map.COLOSSEO, Map.DORADO, Map.ECOPOINT_ANTARCTICA, -1130, Map.EICHENWALDE, 565, Map.ESPERANCA, Map.HANAMURA, 1848, Map.HAVANA, Map.HOLLYWOOD, 1505, Map.HORIZON_LUNAR_COLONY, Map.ILIOS, 1459, 8669, -2957, Map.JUNKENSTEIN, Map.JUNKERTOWN, Map.KANEZAKA, Map.KINGS_ROW, 742, Map.LIJIANG_CONTROL_CENTER, 28714, Map.LIJIANG_GARDEN, 4714, Map.LIJIANG_NIGHT_MARKET, -1429, Map.LIJIANG_TOWER, 3676, Map.MALEVENTO, Map.MIDTOWN, Map.NECROPOLIS, Map.NEPAL, -11860, 1362, -9677, Map.NEPAL, Map.NEW_QUEEN_STREET, Map.NUMBANI, Map.OASIS, 6920, 2159, 345, Map.PARAISO, Map.PARIS, Map.PETRA, Map.PRACTICE_RANGE, Map.RIALTO, Map.ROUTE66, Map.TEMPLE_OF_ANUBIS, Map.VOLSKAYA, Map.WATCHPOINT_GIBRALTAR, Map.WORKSHOP_CHAMBER, Map.WORKSHOP_EXPANSE, 96, Map.WORKSHOP_GREEN_SCREEN, Map.WORKSHOP_ISLAND, 196, Map.SHAMBALI_MONASTERY]:
+        __currentMap_____ = __currentMap____
+        return
+    __currentMap_____ = raycast(vect(500, 100, 500), vect(-500, -100, -500), null, null, false).getHitPosition()
+    if __currentMap_____ == vect(0, 0, 0) or __currentMap_____ == vect(-500, -100, -500):
+        __currentMap_____ = raycast(vect(30, 5, 0), vect(-30, -10, -10), null, null, false).getHitPosition()
+        if __currentMap_____ == vect(-30, -10, -10):
+            __currentMap_____ = raycast(vect(200, 20, 100), vect(100, -100, -100), null, null, false).getHitPosition()
+            if __currentMap_____ == vect(100, -100, -100):
+                __currentMap_____ = raycast(vect(300, 20, -100), vect(300, -100, 100), null, null, false).getHitPosition()
+                if __currentMap_____ == vect(300, -100, 100):
+                    __currentMap_____ = raycast(vect(50, 100, -150), vect(-50, -100, -160), null, null, false).getHitPosition()
+                    if __currentMap_____ == vect(-50, -100, -160):
+                        __currentMap_____ = raycast(vect(0, 300, 340), vect(0, -100, -300), null, null, false).getHitPosition()
+                        if __currentMap_____ == vect(0, -100, -300):
+                            __currentMap_____ = raycast(vect(140, 10, -240), vect(200, -10, -300), null, null, false).getHitPosition()
+                            if __currentMap_____ == vect(200, -10, -300):
+                                __currentMap_____ = raycast(vect(-180, 30, 60), vect(-180, -50, -60), null, null, false).getHitPosition()
+    __currentMap_____ = 100 * ceil(__currentMap_____.y) + 10 * round(__currentMap_____.x) + floor(__currentMap_____.z)
+    if __currentMap_____ == 10121:
+        __currentMap_____ = raycast(vect(-60, 20, -60), vect(60, -10, 60), null, null, false).getHitPosition()
+        if __currentMap_____ == vect(60, -10, 60):
+            __currentMap_____ = raycast(vect(-180, -70, 60), vect(-180, -100, -60), null, null, false).getHitPosition()
+        __currentMap_____ = 100 * ceil(__currentMap_____.y) + 10 * round(__currentMap_____.x) + floor(__currentMap_____.z)
 
 
 rule "Remove Assembling Heroes":
@@ -312,45 +336,45 @@ rule "Defense Map Teleport":
     @Condition eventPlayer.isAlive() == true
     @Condition eventPlayer.getCurrentHero() == true
     
-    if __currentMap____ == Map.BLIZZ_WORLD:
+    if __currentMap_____ == Map.BLIZZ_WORLD:
         eventPlayer.teleport(vect(-8.171, 3.824, 65.861))
-    elif __currentMap____ == Map.EICHENWALDE:
+    elif __currentMap_____ == Map.EICHENWALDE:
         eventPlayer.teleport(vect(13.226, 12.981, -83.655))
-    elif __currentMap____ == Map.HOLLYWOOD:
+    elif __currentMap_____ == Map.HOLLYWOOD:
         eventPlayer.teleport(vect(-19.248, 8.007, -9.802))
-    elif __currentMap____ == Map.KINGS_ROW:
+    elif __currentMap_____ == Map.KINGS_ROW:
         eventPlayer.teleport(vect(-37.185, 10.346, -15.058))
-    elif __currentMap____ == Map.MIDTOWN:
+    elif __currentMap_____ == Map.MIDTOWN:
         eventPlayer.teleport(vect(9.46, 4.72, 29.37))
-    elif __currentMap____ == Map.NUMBANI:
+    elif __currentMap_____ == Map.NUMBANI:
         eventPlayer.teleport(vect(93.044, 5.53, -22.723))
-    elif __currentMap____ == Map.PARAISO:
+    elif __currentMap_____ == Map.PARAISO:
         eventPlayer.teleport(vect(-18.59, 5.75, 19.54))
-    elif __currentMap____ == Map.HANAMURA:
+    elif __currentMap_____ == Map.HANAMURA:
         eventPlayer.teleport(vect(13.079, 1.346, -24.267))
-    elif __currentMap____ == Map.HORIZON_LUNAR_COLONY:
+    elif __currentMap_____ == Map.HORIZON_LUNAR_COLONY:
         eventPlayer.teleport(vect(42.356, 15.84, -79.798))
-    elif __currentMap____ == Map.PARIS:
+    elif __currentMap_____ == Map.PARIS:
         eventPlayer.teleport(vect(-40.379, 16.5, -14.259))
-    elif __currentMap____ == Map.TEMPLE_OF_ANUBIS:
+    elif __currentMap_____ == Map.TEMPLE_OF_ANUBIS:
         eventPlayer.teleport(vect(-23.909, 3.312, 46.94))
-    elif __currentMap____ == Map.VOLSKAYA:
+    elif __currentMap_____ == Map.VOLSKAYA:
         eventPlayer.teleport(vect(-35.545, -1.433, 73.561))
-    elif __currentMap____ == Map.CIRCUIT_ROYAL:
+    elif __currentMap_____ == Map.CIRCUIT_ROYAL:
         eventPlayer.teleport(vect(-22.3, 11, -6.26))
-    elif __currentMap____ == Map.DORADO:
+    elif __currentMap_____ == Map.DORADO:
         eventPlayer.teleport(vect(57.088, 9.241, -16.884))
-    elif __currentMap____ == Map.HAVANA:
+    elif __currentMap_____ == Map.HAVANA:
         eventPlayer.teleport(vect(-18.059, 9.184, -70.117))
-    elif __currentMap____ == Map.JUNKERTOWN:
+    elif __currentMap_____ == Map.JUNKERTOWN:
         eventPlayer.teleport(vect(-28.382, 14.223, -68.289))
-    elif __currentMap____ == Map.SHAMBALI_MONASTERY:
+    elif __currentMap_____ == Map.SHAMBALI_MONASTERY:
         eventPlayer.teleport(vect(-13.09, 15, 60.94))
-    elif __currentMap____ == Map.RIALTO:
+    elif __currentMap_____ == Map.RIALTO:
         eventPlayer.teleport(vect(55.603, 2.452, -44.947))
-    elif __currentMap____ == Map.ROUTE66:
+    elif __currentMap_____ == Map.ROUTE66:
         eventPlayer.teleport(vect(33.662, 10.325, -5.514))
-    elif __currentMap____ == Map.WATCHPOINT_GIBRALTAR:
+    elif __currentMap_____ == Map.WATCHPOINT_GIBRALTAR:
         eventPlayer.teleport(vect(32.488, 4.692, -71.941))
 
 
@@ -495,7 +519,7 @@ rule "Log Map Info":
     @Condition MapInfoLogged == false
     
     MapInfoLogged = true
-    printLog("|{0}|{1}|{2}|{3}".format(__currentMap____, GameMode , getPlayersInSlot(0, Team.1).getTeam(), "{0}|{1}".format(getPlayersInSlot(0, Team.2).getTeam(), getCurrentObjective())))
+    printLog("|{0}|{1}|{2}".format(__currentMap_____, GameMode, "{0}|{1}".format(getPlayersInSlot(0, Team.1).getTeam(), "{0}|{1}".format(getPlayersInSlot(0, Team.2).getTeam(), getCurrentObjective()))))
     printLog("|{0}|{1}|{2}".format(getPlayersInSlot(0, Team.1), getPlayersInSlot(1, Team.1), "{0}|{1}|{2}".format(getPlayersInSlot(2, Team.1), getPlayersInSlot(3, Team.1), "{0}|{1}|{2}".format(getPlayersInSlot(4, Team.1), getPlayersInSlot(0, Team.2), "{0}|{1}|{2}".format(getPlayersInSlot(1, Team.2), getPlayersInSlot(2, Team.2), "{0}|{1}".format(getPlayersInSlot(3, Team.2), getPlayersInSlot(4, Team.2)))))))
 
 
@@ -518,7 +542,7 @@ def LogMapGamemodeInfo():
         printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), getControlScorePercentage(Team.1), getControlScorePercentage(Team.2)))
     elif getCurrentGamemode() == Gamemode.ESCORT:
         #time, team 1 attacking (else is team 2), payload progress percentage
-        printLog("|{0}|{1}|{2}|{3}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getPayloadProgressPercentage(), getPayloadPosition()))
+        printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), "{0}|{1}".format(getPayloadProgressPercentage(), getPayloadPosition())))
     elif getCurrentGamemode() == Gamemode.ASSAULT:
         #time, team 1 attacking (else is team 2), point capture percentage
         printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getCapturePercentage()))
@@ -528,7 +552,7 @@ def LogMapGamemodeInfo():
         else:
             if teamScore(Team.2) >= 1:
                 #time, team 1 attacking (else is team 2), payload progress percentage
-                printLog("|{0}|{1}|{2}|{3}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getPayloadProgressPercentage(), getPayloadPosition()))
+                printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), "{0}|{1}".format(getPayloadProgressPercentage(), getPayloadPosition())))
             else:
                 #time, team 1 attacking (else is team 2), point capture percentage
                 printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), isTeamOnOffense(Team.1), getCapturePercentage()))
@@ -553,7 +577,7 @@ rule "Player Logging - Ongoing":
     @Condition MapInfoLogged == true
     @Condition isMatchBetweenRounds() == false
     
-    printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), eventPlayer, "{0}|{1}|{2}".format(eventPlayer.getCurrentHero(), eventPlayer.getStatistic(Stat.HERO_DAMAGE_DEALT), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.BARRIER_DAMAGE_DEALT), eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.DAMAGE_TAKEN), eventPlayer.getStatistic(Stat.DEATHS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.ELIMINATIONS), eventPlayer.getStatistic(Stat.FINAL_BLOWS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.ENVIRONMENTAL_DEATHS), eventPlayer.getStatistic(Stat.ENVIRONMENTAL_KILLS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.HEALING_DEALT), eventPlayer.getStatistic(Stat.OBJECTIVE_KILLS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.SOLO_KILLS), eventPlayer.getStatistic(Stat.ULTIMATES_EARNED), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.ULTIMATES_USED), eventPlayer.getHeroStatistic(getAllHeroes(), HeroStat.HEALING_RECEIVED), "{0}|{1}|{2}".format(eventPlayer.getUltCharge(), eventPlayer.getPlayerClosestToReticle(Team.ALL), "{0}|{1}|{2}".format(eventPlayer.getPosition(), eventPlayer.getTeam(), "{0}|{1}|{2}".format(eventPlayer.getAbilityCooldown(Button.ABILITY_1), eventPlayer.getAbilityCooldown(Button.ABILITY_2), "{0}|{1}".format(eventPlayer.getMaxHealth(), eventPlayer.getFacingDirection()))))))))))))))
+    printLog("|{0}|{1}|{2}".format(getTotalTimeElapsed(), eventPlayer, "{0}|{1}|{2}".format(eventPlayer.getCurrentHero(), eventPlayer.getStatistic(Stat.HERO_DAMAGE_DEALT), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.BARRIER_DAMAGE_DEALT), eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.DAMAGE_TAKEN), eventPlayer.getStatistic(Stat.DEATHS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.ELIMINATIONS), eventPlayer.getStatistic(Stat.FINAL_BLOWS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.ENVIRONMENTAL_DEATHS), eventPlayer.getStatistic(Stat.ENVIRONMENTAL_KILLS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.HEALING_DEALT), eventPlayer.getStatistic(Stat.OBJECTIVE_KILLS), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.SOLO_KILLS), eventPlayer.getStatistic(Stat.ULTIMATES_EARNED), "{0}|{1}|{2}".format(eventPlayer.getStatistic(Stat.ULTIMATES_USED), eventPlayer.getHeroStatistic(getAllHeroes(), HeroStat.HEALING_RECEIVED), "{0}|{1}|{2}".format(eventPlayer.getUltCharge(), eventPlayer.getPlayerClosestToReticle(Team.ALL), "{0}|{1}|{2}".format(eventPlayer.getPosition(), eventPlayer.getTeam(), "{0}|{1}|{2}".format(eventPlayer.getAbilityCooldown(Button.ABILITY_1), eventPlayer.getAbilityCooldown(Button.ABILITY_2), "{0}|{1}|{2}".format(eventPlayer.getMaxHealth(), eventPlayer.getFacingDirection(), "{0}|{1}".format(eventPlayer.getAltitude(), eventPlayer.getHealth())))))))))))))))
     wait(1)
     #(do at end)
     if isGameInProgress():

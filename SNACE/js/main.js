@@ -17,7 +17,7 @@ d3.json('data/json/Kings_Row_Log.json')
     
 	// For each timestamp of Team 0's player 0:
     for(const property in data[teams[0]][players[4]]) {
-		dataOverTime.push({ "time": new Date(`2000-01-01T${property}`), "val": +data[teams[0]][players[4]][property].dmg_taken });
+		dataOverTime.push({ "time": new Date(`2000-01-01T${property}`), "val": +data[teams[0]][players[4]][property].pos_y });
 	}
 
 	console.log(dataOverTime);
@@ -44,12 +44,12 @@ d3.json('data/json/Paraíso_Log.json')
                     players[player] = data[map][team][player]
                 }
         for(let time in players["Reginald"]){
-            regi.push({x: +players["Reginald"][time]['pos_x'], y: +players["Reginald"][time]['pos_y']})
+            regi.push({x: +players["Reginald"][time]['pos_x'], z: +players["Reginald"][time]['pos_z']})
         }
         
         playerPaths = new PlayerPaths({
             'parentElement': '#player-path',
-			'containerHeight': 500,
+			'containerHeight': 700,
 			'containerWidth': 1500
         }, regi)
         
