@@ -5,7 +5,7 @@ class PlayerPaths {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 5, right: 0, bottom: 20, left: 50 }
+            margin: { top: 5, right: 0, bottom: 30, left: 50 }
         }
         this.data = _data
 
@@ -24,8 +24,8 @@ class PlayerPaths {
         vis.yValue = d => d.y;
 
         const svg = d3.select(vis.config.parentElement)
-            .attr('width', vis.width - vis.config.margin.right - vis.config.margin.left)
-            .attr('height', vis.height - vis.config.margin.top - vis.config.margin.bottom)
+            .attr('width', vis.width)
+            .attr('height', vis.height)
      
         const g = svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
@@ -36,13 +36,15 @@ class PlayerPaths {
 
         const xScale = d3.scaleLinear()
             .domain(d3.extent(vis.data, d => d.x))
-            .range([0, vis.width]);
+            .range([0, vis.width])
+            .nice();
     
         const yScale = d3.scaleLinear()
             .domain(d3.extent(vis.data, d => d.z))
-            .range([0, vis.height]);
+            .range([0, vis.height])
+            .nice();
     
-        const xAxis = d3.axisBottom(xScale)
+        const xAxis = d3.axisBottom(yScale)
 
         const yAxis = d3.axisLeft(yScale)
     
@@ -55,7 +57,7 @@ class PlayerPaths {
         .call(yAxis)
     
         const line = d3.line()
-            .x(d => xScale(d.x))
+            .x(d => yScale(d.x))
             .y(d => yScale(d.z))
             .curve(d3.curveLinearClosed);
     
