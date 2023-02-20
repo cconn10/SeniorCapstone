@@ -3,8 +3,8 @@ import os
 
 GENERAL_MAP_INFO = "Map Info"
 
-readFolderString = "../LogFiles012323/"
-writeFolderString = readFolderString + "JSON/"
+readFolderString = "./SNACE/data/LogFiles012323/"
+writeFolderString = readFolderString + "json2/"
 fileArray = os.listdir(readFolderString)
 
 map_names=["Blizzard World", "Busan", "Circuit Royal", "Colosseo", "Dorado", 
@@ -40,95 +40,112 @@ os.mkdir(writeFolderString)
 
 for file in list(filter(lambda f: ".txt" in f, fileArray)):
 
+    team_one = []
+    team_one_name = ""
+    team_two = []
+    team_two_name = ""
+
     info_dict = {}
     generalMapName=""
 
     with open(readFolderString + file, "r", encoding="utf-8") as log:
-
         print(file)
-
+        
         for line in log:
             
             line = line.split("|")
 
             firstSection = line[1]
             if not IsNumber(firstSection):
-                if firstSection.upper() not in map(lambda m: m.upper() ,map_names):
-                    continue
-                else:
-                    if generalMapName == "":
-                        if firstSection in koth_maps:
-                            generalMapName = koth_maps[firstSection][int(line[4].strip())]
-                        else:
-                            generalMapName = firstSection
-                        info_dict[generalMapName] = {}
-                        info_dict[generalMapName][line[2]] = {}
-                        info_dict[generalMapName][line[3]] = {}
+                if len(team_one) == 0:
+                    if firstSection.upper() in map(lambda m: m.upper() ,map_names):
+                        if generalMapName == "":
+                            if firstSection in koth_maps:
+                                generalMapName = koth_maps[firstSection][int(line[4].strip())]
+                            else:
+                                generalMapName = firstSection
+                            team_one_name = line[2]
+                            team_two_name = line[3]
+                            info_dict[generalMapName] = {}
+                            info_dict[generalMapName][team_one_name] = {}
+                            info_dict[generalMapName][team_two_name] = {}
+                    else:
+                        team_one = [line[1], line[2], line[3], line[4], line[5]]
+                        team_two = [line[6], line[7], line[8], line[9], line[10].split("\n")[0]]
+                        
+                        for player in team_one:
+                            info_dict[generalMapName][team_one_name][player] = {}
+                        for player in team_two:
+                            info_dict[generalMapName][team_two_name][player] = {}
                 continue
                         
             identifier = line[2].strip() 
             time = line[0].strip('[] ')
 
+
             if not IsNumber(identifier):
+
+                if str(time) not in info_dict[generalMapName][team_one_name][team_one[0]] and identifier not in map_text:
+                    for player in team_one:
+                        info_dict[generalMapName][team_one_name][player][str(time)] = {"death": False, "final_blow": False}
+                    for player in team_two:
+                        info_dict[generalMapName][team_two_name][player][str(time)] = {"death": False, "final_blow": False}
+
                 if not identifier.startswith("(") and identifier not in player_text and identifier not in map_text:
                     
                     teamName = line[22]
                     playerName = identifier
 
-                    if playerName not in info_dict[generalMapName][teamName]:
-                        info_dict[generalMapName][teamName][playerName] = {}
-
                     position = line[21].split(',')
                     directionFacing = line[26].split(',')
-                    info_dict[generalMapName][teamName][playerName][str(time)] =  {
-                        "hero": line[3],
-                        "dmg_dealt": line[4],
-                        "barrier_dmg_dealt": line[5],
-                        "dmg_blocked": line[6],
-                        "dmg_taken": line[7],
-                        "deaths": line[8],
-                        "elims": line[9],
-                        "final_blows": line[10],
-                        "enviro_deaths": line[11],
-                        "enviro_kills": line[12],
-                        "healing_dealt": line[13],
-                        "obj_kills": line[14],
-                        "solo_kills": line[15],
-                        "ults_earned": line[16],
-                        "ults_used": line[17],
-                        "healing_received": line[18],
-                        "ult_charge": line[19],
-                        "player_closest_reticle": line[20],
-                        "ability_1_cooldown": line[23],
-                        "ability_2_cooldown": line[24],
-                        "max_health": line[25],
-                        "pos_x": position[0].strip('( '), 
-                        "pos_y": position[1].strip(), 
-                        "pos_z": position[2].strip(') '),
-                        "facing_x": position[0].strip('( '), 
-                        "facing_y": position[1].strip(), 
-                        "facing_z": position[2].strip(') ')}
+
+                    info_dict[generalMapName][teamName][playerName][str(time)]["hero"] = line[3]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["dmg_dealt"] = line[4]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["barrier_dmg_dealt"] = line[5]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["dmg_blocked"] = line[6]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["dmg_taken"] = line[7]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["deaths"] = line[8]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["elims"] = line[9]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["final_blows"] = line[10]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["enviro_deaths"] = line[11]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["enviro_kills"] = line[12]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["healing_dealt"] = line[13]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["obj_kills"] = line[14]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["solo_kills"] = line[15]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["ults_earned"] = line[16]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["ults_used"] = line[17]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["healing_received"] = line[18]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["ult_charge"] = line[19]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["player_closest_reticle"] = line[20]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["ability_1_cooldown"] = line[23]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["ability_2_cooldown"] = line[24]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["max_health"] = line[25]
+                    info_dict[generalMapName][teamName][playerName][str(time)]["pos_x"] = position[0].strip('( ')
+                    info_dict[generalMapName][teamName][playerName][str(time)]["pos_y"] = position[1].strip()
+                    info_dict[generalMapName][teamName][playerName][str(time)]["pos_z"] = position[2].strip(') ')
+                    info_dict[generalMapName][teamName][playerName][str(time)]["facing_x"] = directionFacing[0].strip('( ')
+                    info_dict[generalMapName][teamName][playerName][str(time)]["facing_y"] = directionFacing[1].strip()
+                    info_dict[generalMapName][teamName][playerName][str(time)]["facing_z"] = directionFacing[2].strip(')\n')
+
+
                 elif identifier in player_text:
                     if identifier == "FinalBlow":
-                        info_dict[generalMapName][GENERAL_MAP_INFO][str(time)] = {
-                            
-                        }
+                        eliminatedBy = line[3]
+                        playerEliminated = line[4]
+
+                        playerEliminatedTeam = team_one_name if playerEliminated in team_one else team_two_name
+                        eliminatedByTeam = team_one_name if eliminatedBy in team_one else team_two_name
+
+                        info_dict[generalMapName][playerEliminatedTeam][playerEliminated][str(time)]['death'] = True
+                        info_dict[generalMapName][eliminatedByTeam][eliminatedBy][str(time)]['final_blow'] = True
                     if identifier == "Suicide":
-                        info_dict[generalMapName][GENERAL_MAP_INFO][str(time)] = {
-                            
-                        }
+                        continue
                     if identifier == "Resurrected":
-                        info_dict[generalMapName][GENERAL_MAP_INFO][str(time)] = {
-                            
-                        }
+                        continue
                     if identifier == "DuplicatingStart":
-                        info_dict[generalMapName][GENERAL_MAP_INFO][str(time)] = {
-                            
-                        }
+                        continue
                     if identifier == "DuplicatingEnd":
-                        info_dict[generalMapName][GENERAL_MAP_INFO][str(time)] = {
-                            
-                        }
+                        continue
 
 
         with open(writeFolderString + getFileMapName(generalMapName) + "_Log.json", "w", encoding="utf-8") as output:

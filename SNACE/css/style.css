@@ -1,0 +1,7 @@
+.axis-grid line {
+    stroke: #def;
+}
+
+.inactive {
+    display: none;
+}
