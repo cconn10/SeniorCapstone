@@ -21,7 +21,7 @@ class PlayerPaths {
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom
 
         vis.xValue = d => d.x;
-        vis.yValue = d => d.y;
+        vis.yValue = d => d.z;
 
         vis.chart = d3.select(vis.config.parentElement)
             .attr('width', vis.width)
@@ -67,8 +67,8 @@ class PlayerPaths {
         //     .call(vis.xAxisGrid)
         
         vis.line = d3.line()
-            .x(d => vis.yScale(d.x))
-            .y(d => vis.yScale(d.z))
+            .x(d => vis.yScale(vis.xValue(d)))
+            .y(d => vis.yScale(vis.yValue(d)))
             .curve(d3.curveLinear);
 
         
@@ -95,8 +95,8 @@ class PlayerPaths {
         vis.chart.selectAll('circle')
             .data(vis.lines)
             .join('circle')
-                .attr('cx', d => vis.yScale(d[0].x))
-                .attr('cy', d => vis.yScale(d[0].z))
+                .attr('cx', d => vis.yScale(vis.xValue(d[0])))
+                .attr('cy', d => vis.yScale(vis.yValue(d[0])))
                 .attr('r', "3")
                 .attr('fill', d => vis.colorScale(d))
                 .attr('stroke', "#3f3f3f")
