@@ -1,6 +1,9 @@
 console.log("Hello world");
 let data;
 
+// Initialize dispatcher that is used to orchestrate events
+const dispatcher = d3.dispatch('filterTime');
+
 d3.json('data/json/Kings_Row_Log.json')
   .then(_data => {
   	console.log('Data loading complete. Work with dataset.');
@@ -8,27 +11,28 @@ d3.json('data/json/Kings_Row_Log.json')
     console.log(data);
 
 	const dataOverTime = [];
-	const teams = Object.getOwnPropertyNames(data);
-	const players = Object.getOwnPropertyNames(data[teams[0]]);
-	const timestamps = Object.getOwnPropertyNames(data[teams[0]][players[0]]);
-	// console.log(teams);
-	// console.log(players);
-	// console.log(timestamps);
-    
-	// For each timestamp of Team 0's player 0:
-    for(const property in data[teams[0]][players[4]]) {
-		if(!isNaN(+data[teams[0]][players[4]][property].pos_y))
-			dataOverTime.push({ "time": new Date(`2000-01-01T${property}`), "val": +data[teams[0]][players[4]][property].pos_y });
+	data.teams = Object.getOwnPropertyNames(data);
+	data.players = Object.getOwnPropertyNames(data[data.teams[0]]);
+	data.timestampStrings = Object.getOwnPropertyNames(data[data.teams[0]][data.players[0]]);
+	console.log(data.timestampStrings);
+	data.timestamps = [];
+	for(const property in data[data.teams[0]][data.players[0]]) {
+		data.timestamps.push(new Date(`2000-01-01T${property}`));
 	}
-
-	//console.log(dataOverTime);
 
     lineChart = new LineSimple({
 			'parentElement': '#line',
 			'containerHeight': 500,
 			'containerWidth': 1500
-		}, dataOverTime);
+		}, dispatcher, data);
+	lineChart.updateVis();
 
+	timeline = new Timeline({
+		'parentElement': '#timeline',
+		'containerHeight': 100,
+		'containerWidth': 1500
+	}, dispatcher, data);
+	timeline.updateVis();
 });
 
 
@@ -79,3 +83,19 @@ d3.json('data/json/Paraíso_Log.json')
 		playerPaths.renderVis()
         
     })
+
+	dispatcher.on('filterTime', selectedDomain => {
+		if (selectedDomain.length == 0) {
+				lineChart.data = data;
+			} else {
+				lineChart.data.timestampStrings = [];
+				for(const property in lineChart.data[lineChart.data.teams[0]][lineChart.data.players[0]]) {
+					// data.timestamps.push(new Date(`2000-01-01T${property}`));
+					let timestampTemp = new Date(`2000-01-01T${property}`);
+					if (selectedDomain[0] <= timestampTemp && timestampTemp <= selectedDomain[1]) {
+						lineChart.data.timestampStrings.push(property);
+					}
+				}
+			}
+			lineChart.updateVis();
+	});
