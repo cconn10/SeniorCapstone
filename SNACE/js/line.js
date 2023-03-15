@@ -34,6 +34,10 @@ class LineSimple {
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight);
 
+        // Select parent node to add dropdown menus later; done here so that
+        // the svg is the "active element" and this.parentNode works (I think)
+        vis.parent = vis.svg.select(function() { return this.parentNode; });
+
         // Append group element that will contain chart (see margin convention)
         vis.chart = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
@@ -55,21 +59,70 @@ class LineSimple {
         // Append y-axis group
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis')
+        
+        vis.properties = Object.getOwnPropertyNames(vis.data[vis.data.teams[0]][vis.data.players[0]][vis.data.timestampStrings[0]]);
+
+        // Insert select elements before the chart (svg) within the parent div
+        vis.teamSelect = vis.parent.insert('select', 'svg')
+            .style('display', 'block')    
+            .on('change', () => {
+                vis.data.players = Object.getOwnPropertyNames(vis.data[vis.data.teams[vis.teamSelect.property('value')]]);
+                vis.playerSelect.selectChildren('option').remove();
+                for (let i = 0; i < vis.data.players.length; i++) {
+                    vis.playerSelect.append('option')
+                        .attr('value', String(i))
+                        .text(vis.data.players[i]);
+                }
+                
+                vis.updateVis();
+            });
+        
+        vis.playerSelect = vis.parent.insert('select', 'svg')
+            .style('display', 'block')    
+            .on('change', () => {
+                vis.updateVis();
+            });
+
+        vis.propSelect = vis.parent.insert('select', 'svg')
+            .style('display', 'block')    
+            .on('change', () => {
+                vis.updateVis();
+            });
+
+        for (let i = 0; i < vis.data.teams.length; i++) {
+            vis.teamSelect.append('option')
+                .attr('value', String(i))
+                .text(vis.data.teams[i]);
+        }
+
+        for (let i = 0; i < vis.data.players.length; i++) {
+            vis.playerSelect.append('option')
+                .attr('value', String(i))
+                .text(vis.data.players[i]);
+        }
+        
+        for (let i = 0; i < vis.properties.length; i++) {
+            vis.propSelect.append('option')
+                .attr('value', String(i))
+                .text(vis.properties[i]);
+        }
     }
 
 
     updateVis() { 
         let vis = this;
-
-        // Process data
-        // TODO: select team, player via dropdown (or other interactivity)
-        vis.teams = Object.getOwnPropertyNames(vis.data);
-        vis.players = Object.getOwnPropertyNames(vis.data[vis.teams[0]]);
+        
         vis.dataOverTime = [];
+        // Find selected team, player, property from dropdowns
+        vis.data.selectedTeam = vis.data.teams[vis.teamSelect.property('value')];
+        vis.data.selectedPlayer = vis.data.players[vis.playerSelect.property('value')];
+        vis.data.selectedProperty = vis.properties[vis.propSelect.property('value')];
+        
+        // Fill in array of {time, val} objects for graphing
 		for(const timestampString of vis.data.timestampStrings) {
-            if(!isNaN(+data[vis.teams[0]][vis.players[0]][timestampString].pos_y))
+            if(!isNaN(+vis.data[vis.data.selectedTeam][vis.data.selectedPlayer][timestampString][vis.data.selectedProperty]))
                 vis.dataOverTime.push({ "time": new Date(`2000-01-01T${timestampString}`), 
-                                        "val": +vis.data[vis.teams[0]][vis.players[0]][timestampString].pos_y });
+                                        "val": +vis.data[vis.data.selectedTeam][vis.data.selectedPlayer][timestampString][vis.data.selectedProperty] });
 		}
         
         //reusable functions for x and y 

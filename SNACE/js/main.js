@@ -89,11 +89,11 @@ d3.json('data/json/Paraíso_Log.json')
 				lineChart.data = data;
 			} else {
 				lineChart.data.timestampStrings = [];
-				for(const property in lineChart.data[lineChart.data.teams[0]][lineChart.data.players[0]]) {
-					// data.timestamps.push(new Date(`2000-01-01T${property}`));
-					let timestampTemp = new Date(`2000-01-01T${property}`);
+				console.log(lineChart.data[lineChart.data.selectedTeam][lineChart.data.selectedPlayer]);
+				for(const timestampSting in lineChart.data[lineChart.data.selectedTeam][lineChart.data.selectedPlayer]) {
+					let timestampTemp = new Date(`2000-01-01T${timestampSting}`);
 					if (selectedDomain[0] <= timestampTemp && timestampTemp <= selectedDomain[1]) {
-						lineChart.data.timestampStrings.push(property);
+						lineChart.data.timestampStrings.push(timestampSting);
 					}
 				}
 			}
