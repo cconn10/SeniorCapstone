@@ -44,3 +44,12 @@ div {
 .axis-grid line {
     stroke: #def;
 }
+
+
+.time-chart {
+    grid-column: line2 / end;
+    grid-row: line3 / end;
+}
+.inactive {
+    display: none;
+}
