@@ -1,13 +1,14 @@
 class PlayerPaths {
 
-    constructor(_config, _data) {
+    constructor(_config, _data, _lines) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 5, right: 0, bottom: 30, left: 50 }
+            margin: { top: 20, right: 0, bottom: 40, left: 50 }
         }
         this.data = _data
+        this.lines = _lines
 
         this.initVis();
     }
@@ -15,55 +16,89 @@ class PlayerPaths {
     initVis() {
         let vis = this;
 
-        console.log(vis.data)
 
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom
 
         vis.xValue = d => d.x;
-        vis.yValue = d => d.y;
+        vis.yValue = d => d.z;
 
-        const svg = d3.select(vis.config.parentElement)
+        vis.chart = d3.select(vis.config.parentElement)
             .attr('width', vis.width)
             .attr('height', vis.height)
-     
-        const g = svg.append('g')
-            .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
-    
+            .append('g')
+                .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-        console.log(d3.extent(vis.data, d => d.x))
-        console.log(d3.extent(vis.data, d => d.z))
-
-        const xScale = d3.scaleLinear()
+        vis.xScale = d3.scaleLinear()
             .domain(d3.extent(vis.data, d => d.x))
             .range([0, vis.width])
             .nice();
     
-        const yScale = d3.scaleLinear()
+        vis.yScale = d3.scaleLinear()
             .domain(d3.extent(vis.data, d => d.z))
             .range([0, vis.height])
             .nice();
     
-        const xAxis = d3.axisBottom(yScale)
+        vis.xAxis = d3.axisTop(vis.yScale)
+        vis.yAxis = d3.axisLeft(vis.yScale)
+        
+        // vis.xAxisGrid = d3.axisBottom(vis.yScale).tickSize(-vis.containerHeight).tickFormat('')
+        // vis.yAxisGrid = d3.axisBottom(vis.yScale).tickSize(-vis.containerWidth).tickFormat('')
 
-        const yAxis = d3.axisLeft(yScale)
-    
-        const xAxisGroup = g.append('g')
+        console.log(vis.lines)
+
+        vis.colorScale = d3.scaleOrdinal(d3.schemeTableau10)
+            .domain(vis.lines)
+
+        vis.xAxisGroup = vis.chart.append('g')
             .attr('class', 'axis x-axis')
-            .call(xAxis)
+            .call(vis.xAxis)
     
-        const yAxisGroup = g.append('g')
-        .attr('class', 'axis y-axis')
-        .call(yAxis)
+        vis.yAxisGroup = vis.chart.append('g')
+            .attr('class', 'axis y-axis')
+            .call(vis.yAxis)
     
-        const line = d3.line()
-            .x(d => yScale(d.x))
-            .y(d => yScale(d.z))
-            .curve(d3.curveLinearClosed);
-    
-        g.append('path')
-            .attr('d', line(vis.data))
-            .attr('stroke', 'red')
+        // vis.yAxisGridGroup = vis.chart.append('g')
+        //     .attr('class', 'axis-grid')
+        //     .call(vis.yAxisGrid)
+
+        // vis.xAxisGridGroup = vis.chart.append('g')
+        //     .attr('class', 'axis-grid')
+        //     .call(vis.xAxisGrid)
+        
+        vis.line = d3.line()
+            .x(d => vis.yScale(vis.xValue(d)))
+            .y(d => vis.yScale(vis.yValue(d)))
+            .curve(d3.curveLinear);
+
+        
+        
+    }
+
+    updateVis() {
+        let vis = this
+
+        vis.renderVis()
+
+    }
+
+    renderVis() {
+        let vis = this
+
+        vis.chart.selectAll('path')
+        .data(vis.lines)
+        .join('path')
+            .attr('d', d => vis.line(d))
+            .attr('stroke', d => vis.colorScale(d))
             .attr('fill', 'none')
+
+        vis.chart.selectAll('circle')
+            .data(vis.lines)
+            .join('circle')
+                .attr('cx', d => vis.yScale(vis.xValue(d[0])))
+                .attr('cy', d => vis.yScale(vis.yValue(d[0])))
+                .attr('r', "3")
+                .attr('fill', d => vis.colorScale(d))
+                .attr('stroke', "#3f3f3f")
     }
 }

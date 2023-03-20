@@ -41,8 +41,6 @@ div {
     grid-column: line2 / end;
     grid-row: line2 / line3;
 }
-
-.time-chart {
-    grid-column: line2 / end;
-    grid-row: line3 / end;
+.axis-grid line {
+    stroke: #def;
 }
