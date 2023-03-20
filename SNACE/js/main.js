@@ -21,14 +21,14 @@ d3.json('data/json/Kings_Row_Log.json')
 	}
 
     lineChart = new LineSimple({
-			'parentElement': '#line',
+			'parentElement': '#chart-one',
 			'containerHeight': 500,
 			'containerWidth': 1500
 		}, dispatcher, data);
 	lineChart.updateVis();
 
 	timeline = new Timeline({
-		'parentElement': '#timeline',
+		'parentElement': '#chart-two',
 		'containerHeight': 100,
 		'containerWidth': 1500
 	}, dispatcher, data);
@@ -75,7 +75,7 @@ d3.json('data/json/Paraíso_Log.json')
 		console.log(lives)
 
         playerPaths = new PlayerPaths({
-            'parentElement': '#player-path',
+            'parentElement': '#position-map',
 			'containerHeight': 700,
 			'containerWidth': 1500
         }, dataOverTime, lives)

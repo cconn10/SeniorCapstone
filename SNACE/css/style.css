@@ -8,48 +8,35 @@ div {
     width: 95vw;
     height: 90vh;
     display: grid;
-    grid-template-columns: [start] 10% [line2] 30% [line3] 30% [line4] 30% [end];
-    grid-template-rows: [start] 35% [line2] 50% [line3] 15% [end];
+    grid-template-columns: [start] 15% [line2] 70% [line3] 15% [end];
+    grid-template-rows: [start] 4% [line2] 22% [line3] 22% [line4] 22% [line5] 30% [end];
 }
 
-.sidebar {
-    grid-column: start / line2;
-    grid-row: start / line2;
-}
-
-.info-panel  {
-    grid-column: start / line2;
-    grid-row: line2 / line3;
-}
-
-.chart-one {
+#chart-one {
     grid-column: line2 / line3;
-    grid-row: start / line2;
+    grid-row: line2 / line2;
 }
 
-.chart-two {
-    grid-column: line3 / line4;
-    grid-row: start / line2;
+#chart-two {
+    grid-column: line2 / line3;
+    grid-row: line3 / line4;
 }
 
-.chart-three {
-    grid-column: line4 / end;
-    grid-row: start / line2;
+#chart-three {
+    grid-column: line2 / line3;
+    grid-row: line4 / line5;
 }
 
-.position-map {
-    grid-column: line2 / end;
-    grid-row: line2 / line3;
+#position-map {
+    grid-column: line2 / line3;
+    grid-row: line5 / end;
 }
+
+.inactive {
+    display: none;
+}
+
 .axis-grid line {
     stroke: #def;
 }
 
-
-.time-chart {
-    grid-column: line2 / end;
-    grid-row: line3 / end;
-}
-.inactive {
-    display: none;
-}
