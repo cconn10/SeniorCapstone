@@ -44,7 +44,7 @@ let dataOverTime = []
 
 d3.json('data/json/Paraíso_Log.json')
     .then(_data => {
-		data = _data["Paraíso"]
+		data = _data["Para\\u00edso"]
 
 		console.log(_data)
 
@@ -53,16 +53,32 @@ d3.json('data/json/Paraíso_Log.json')
 		const timestamps = Object.getOwnPropertyNames(data[teams[0]][players[0]]);
 
         for(let property in data[teams[0]][player]){
-            dataOverTime.push({x: +data[teams[0]][player][property]['pos_x'], z: +data[teams[0]][player][property]['pos_z'], death: data[teams[0]][player][property]['death'] })
+            dataOverTime.push({time: property, x: +data[teams[0]][player][property]['pos_x'], z: +data[teams[0]][player][property]['pos_z'], death: data[teams[0]][player][property]['death'] })
         }
         
         let currentLife = []
         let lives = []
+		let deathPosition = {}
 
         dataOverTime.forEach(timeStamp => {
 
         currentLife.push(timeStamp)
             if(timeStamp.death){
+				console.log(currentLife)
+
+				deathPosition = currentLife[0]
+				console.log(deathPosition)
+
+				while (true)
+				{
+					if(currentLife[0].x != deathPosition.x || currentLife[0].z != deathPosition.z)
+						break
+					else{
+						console.log(currentLife[0])
+						currentLife.splice(0, 1)
+					}
+				}
+				console.log(currentLife)
                 lives.push(currentLife)
                 currentLife = []
             }

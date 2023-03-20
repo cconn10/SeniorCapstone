@@ -5,7 +5,8 @@ class PlayerPaths {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 20, right: 0, bottom: 40, left: 50 }
+            margin: { top: 20, right: 0, bottom: 40, left: 50 },
+            tooltipPadding: _config.tooltipName || 15
         }
         this.data = _data
         this.lines = _lines
@@ -69,7 +70,21 @@ class PlayerPaths {
         vis.line = d3.line()
             .x(d => vis.yScale(vis.xValue(d)))
             .y(d => vis.yScale(vis.yValue(d)))
-            .curve(d3.curveLinear);
+            .curve(d3.curveLinear)
+            .on("mouseover", (event, d) => {
+                console.log(d)
+                d3.select("#tooltip")
+                    .style('display', 'block')
+                    .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                    .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                    .html(`
+                    <p>Discovery Method: ${d}</p>
+                    <p>Count: ${d}</p>
+                    `)
+            }).on('mouseout', (event, d) => {
+                d3.select("#tooltip")
+                    .style('display', 'none')
+            })
 
         
         
@@ -91,7 +106,6 @@ class PlayerPaths {
             .attr('d', d => vis.line(d))
             .attr('stroke', d => vis.colorScale(d))
             .attr('fill', 'none')
-
         vis.chart.selectAll('circle')
             .data(vis.lines)
             .join('circle')

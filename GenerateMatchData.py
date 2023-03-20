@@ -53,9 +53,11 @@ for file in list(filter(lambda f: ".txt" in f, fileArray)):
     team_two = []
     team_two_name = ""
 
-    info_dict = {}
     generalMapName=""
     subMapName=""
+    gameMode = ""
+    
+    info_dict = {}
 
     with open(readFolderString + file, "r", encoding="utf-8") as log:
         print(file)
@@ -69,6 +71,7 @@ for file in list(filter(lambda f: ".txt" in f, fileArray)):
                 if firstSection.upper() in map(lambda m: m.upper(), map_names):
                     if generalMapName == "":
                         generalMapName = firstSection
+                        gameMode = line[2]
                     if firstSection in koth_maps:
                         subMapName = koth_maps[firstSection][int(line[5].strip())]
                     else:
@@ -131,6 +134,7 @@ for file in list(filter(lambda f: ".txt" in f, fileArray)):
                     for i in range(0, 2):
                         info_dict[generalMapName][teamName][playerName][str(time)][positionDataNames[i]] = position[i].strip('( ')
                         info_dict[generalMapName][teamName][playerName][str(time)][facingDataNames[i]] = directionFacing[i].strip('( ')
+                    info_dict[generalMapName][teamName][playerName][str(time)]["game_section"] = line[i]
 
 
                 elif identifier in player_text:
