@@ -37,9 +37,8 @@ def IsNumber(s):
     except ValueError:
         return False
 
-def getFileMapName(s):
-    s = s.replace("'","")
-    s = s.replace(" ","_")
+def getFileTeamName(s):
+    s = s.replace(" ","-")
 
     return s
 
@@ -53,9 +52,11 @@ for file in list(filter(lambda f: ".txt" in f, fileArray)):
     team_two = []
     team_two_name = ""
 
-    info_dict = {}
     generalMapName=""
     subMapName=""
+    gameMode = ""
+    
+    info_dict = {}
 
     with open(readFolderString + file, "r", encoding="utf-8") as log:
         print(file)
@@ -69,23 +70,27 @@ for file in list(filter(lambda f: ".txt" in f, fileArray)):
                 if firstSection.upper() in map(lambda m: m.upper(), map_names):
                     if generalMapName == "":
                         generalMapName = firstSection
+                        gameMode = line[2]
+
+                        team_one_name = line[3]
+                        team_two_name = line[4]
+
+                        info_dict[generalMapName] = {}
+                        info_dict[generalMapName][team_one_name] = {}
+                        info_dict[generalMapName][team_two_name] = {}
                     if firstSection in koth_maps:
                         subMapName = koth_maps[firstSection][int(line[5].strip())]
                     else:
                         subMapName = firstSection
-                    team_one_name = line[3]
-                    team_two_name = line[4]
-                    info_dict[generalMapName] = {}
-                    info_dict[generalMapName][team_one_name] = {}
-                    info_dict[generalMapName][team_two_name] = {}
                 else:
-                    team_one = [line[1], line[2], line[3], line[4], line[5]]
-                    team_two = [line[6], line[7], line[8], line[9], line[10].split("\n")[0]]
-                    
-                    for player in team_one:
-                        info_dict[generalMapName][team_one_name][player] = {}
-                    for player in team_two:
-                        info_dict[generalMapName][team_two_name][player] = {}
+                    if len(team_one) == 0 or len(team_two) == 0:
+                        team_one = [line[1], line[2], line[3], line[4], line[5]]
+                        team_two = [line[6], line[7], line[8], line[9], line[10].split("\n")[0]]
+                        
+                        for player in team_one:
+                            info_dict[generalMapName][team_one_name][player] = {}
+                        for player in team_two:
+                            info_dict[generalMapName][team_two_name][player] = {}
                 continue
                         
             identifier = line[2].strip() 
@@ -128,10 +133,9 @@ for file in list(filter(lambda f: ".txt" in f, fileArray)):
                         info_dict[generalMapName][teamName][playerName][str(time)][dataNames[i-5]] = line[i]
                     for i in range(27, 29):
                         info_dict[generalMapName][teamName][playerName][str(time)][dataNames[i-6]] = line[i]
-                    for i in range(0, 2):
-                        info_dict[generalMapName][teamName][playerName][str(time)][positionDataNames[i]] = position[i].strip('( ')
-                        info_dict[generalMapName][teamName][playerName][str(time)][facingDataNames[i]] = directionFacing[i].strip('( ')
-
+                    for i in range(0, 3):
+                        info_dict[generalMapName][teamName][playerName][str(time)][positionDataNames[i]] = position[i].strip('( )')
+                        info_dict[generalMapName][teamName][playerName][str(time)][facingDataNames[i]] = directionFacing[i].strip('( )')
 
                 elif identifier in player_text:
                     if identifier == "FinalBlow":
@@ -184,6 +188,6 @@ for file in list(filter(lambda f: ".txt" in f, fileArray)):
                         info_dict[generalMapName][playerDuplicatingTeam][playerDuplicating][str(time)]['duplicating'] = ""
 
 
-        with open(writeFolderString + str(uuid.uuid4()) + "-" + team_one_name + "-" + team_two_name + ".json", "w", encoding="utf-8") as output:
+        with open(writeFolderString + str(uuid.uuid4()) + "-" + getFileTeamName(team_one_name) + "-" + getFileTeamName(team_two_name) + ".json", "w", encoding="utf-8") as output:
             json.dump(info_dict, output)
  
