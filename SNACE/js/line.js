@@ -18,6 +18,9 @@ class LineSimple {
       
         let vis = this;
 
+        vis.teams = vis.data.teams;
+        vis.players = vis.data.players;
+
         //set up the width and height of the area where visualizations will go- factoring in margins               
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
@@ -66,12 +69,12 @@ class LineSimple {
         vis.teamSelect = vis.parent.insert('select', 'svg')
             .style('display', 'block')    
             .on('change', () => {
-                vis.data.players = Object.getOwnPropertyNames(vis.data[vis.data.teams[vis.teamSelect.property('value')]]);
+                vis.players = Object.getOwnPropertyNames(vis.data[vis.teams[vis.teamSelect.property('value')]]);
                 vis.playerSelect.selectChildren('option').remove();
-                for (let i = 0; i < vis.data.players.length; i++) {
+                for (let i = 0; i < vis.players.length; i++) {
                     vis.playerSelect.append('option')
                         .attr('value', String(i))
-                        .text(vis.data.players[i]);
+                        .text(vis.players[i]);
                 }
                 
                 vis.updateVis();
@@ -92,13 +95,13 @@ class LineSimple {
         for (let i = 0; i < vis.data.teams.length; i++) {
             vis.teamSelect.append('option')
                 .attr('value', String(i))
-                .text(vis.data.teams[i]);
+                .text(vis.teams[i]);
         }
 
-        for (let i = 0; i < vis.data.players.length; i++) {
+        for (let i = 0; i < vis.players.length; i++) {
             vis.playerSelect.append('option')
                 .attr('value', String(i))
-                .text(vis.data.players[i]);
+                .text(vis.players[i]);
         }
         
         for (let i = 0; i < vis.properties.length; i++) {
@@ -114,16 +117,23 @@ class LineSimple {
         
         vis.dataOverTime = [];
         // Find selected team, player, property from dropdowns
-        vis.data.selectedTeam = vis.data.teams[vis.teamSelect.property('value')];
-        vis.data.selectedPlayer = vis.data.players[vis.playerSelect.property('value')];
-        vis.data.selectedProperty = vis.properties[vis.propSelect.property('value')];
+        vis.selectedTeam = vis.teams[vis.teamSelect.property('value')];
+        if (vis.playerSelect.property('value')) {
+            vis.selectedPlayer = vis.players[vis.playerSelect.property('value')];
+        } 
+        else vis.selectedPlayer = vis.players[0];
+        console.log(vis.selectedPlayer);
+        console.log(vis.selectedTeam);
+        console.log(vis.data[vis.selectedTeam][vis.selectedPlayer]);
+        vis.selectedProperty = vis.properties[vis.propSelect.property('value')];
         
         // Fill in array of {time, val} objects for graphing
 		for(const timestampString of vis.data.timestampStrings) {
-            if(!isNaN(+vis.data[vis.data.selectedTeam][vis.data.selectedPlayer][timestampString][vis.data.selectedProperty]))
+            if(!isNaN(+vis.data[vis.selectedTeam][vis.selectedPlayer][timestampString][vis.selectedProperty])) {
                 vis.dataOverTime.push({ "time": new Date(`2000-01-01T${timestampString}`), 
-                                        "val": +vis.data[vis.data.selectedTeam][vis.data.selectedPlayer][timestampString][vis.data.selectedProperty] });
-		}
+                                        "val": +vis.data[vis.selectedTeam][vis.selectedPlayer][timestampString][vis.selectedProperty] });
+            }
+        }
         
         //reusable functions for x and y 
         vis.xValue = d => d.time; 

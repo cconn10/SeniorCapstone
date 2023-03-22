@@ -22,10 +22,17 @@ d3.json('data/json/Kings_Row_Log.json')
 
     lineChart = new LineSimple({
 			'parentElement': '#line',
-			'containerHeight': 500,
+			'containerHeight': 250,
 			'containerWidth': 1500
 		}, dispatcher, data);
 	lineChart.updateVis();
+
+	lineChart2 = new LineSimple({
+		'parentElement': '#line2',
+		'containerHeight': 250,
+		'containerWidth': 1500
+	}, dispatcher, data);
+	lineChart2.updateVis();
 
 	timeline = new Timeline({
 		'parentElement': '#timeline',
@@ -87,15 +94,26 @@ d3.json('data/json/Paraíso_Log.json')
 	dispatcher.on('filterTime', selectedDomain => {
 		if (selectedDomain.length == 0) {
 				lineChart.data = data;
+				lineChart2.data = data;
 			} else {
 				lineChart.data.timestampStrings = [];
-				console.log(lineChart.data[lineChart.data.selectedTeam][lineChart.data.selectedPlayer]);
-				for(const timestampSting in lineChart.data[lineChart.data.selectedTeam][lineChart.data.selectedPlayer]) {
+				// console.log(lineChart.data[lineChart.data.selectedTeam][lineChart.data.selectedPlayer]);
+				for(const timestampSting in lineChart.data[lineChart.selectedTeam][lineChart.selectedPlayer]) {
 					let timestampTemp = new Date(`2000-01-01T${timestampSting}`);
 					if (selectedDomain[0] <= timestampTemp && timestampTemp <= selectedDomain[1]) {
 						lineChart.data.timestampStrings.push(timestampSting);
+						// lineChart2.data.timestampStrings.push(timestampSting);
 					}
 				}
+
+				// lineChart2.data.timestampStrings = [];
+				// for(const timestampSting in lineChart2.data[lineChart2.selectedTeam][lineChart2.selectedPlayer]) {
+				// 	let timestampTemp = new Date(`2000-01-01T${timestampSting}`);
+				// 	if (selectedDomain[0] <= timestampTemp && timestampTemp <= selectedDomain[1]) {
+				// 		lineChart2.data.timestampStrings.push(timestampSting);
+				// 	}
+				// }
 			}
 			lineChart.updateVis();
+			lineChart2.updateVis();
 	});
