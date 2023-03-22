@@ -5,7 +5,7 @@ class PlayerPaths {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 20, right: 0, bottom: 40, left: 50 }
+            margin: { top: 40, right: 0, bottom: 40, left: 50 }
         }
 
         this.dispatcher = _dispatcher
@@ -110,8 +110,8 @@ class PlayerPaths {
 		//uncomment to see just one line
 		//vis.lives = [vis.lives[9]]
 
-        vis.xValue = d => d.x;
-        vis.yValue = d => d.z;
+        vis.xValue = d => d.z;
+        vis.yValue = d => d.x;
         
         vis.xExtent = d3.extent(vis.dataOverTime, d => vis.xValue(d))
         vis.zExtent = d3.extent(vis.dataOverTime, d => vis.yValue(d))
