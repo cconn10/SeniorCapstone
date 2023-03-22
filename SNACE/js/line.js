@@ -67,7 +67,7 @@ class LineSimple {
         vis.players = Object.getOwnPropertyNames(vis.data[vis.teams[0]]);
         vis.dataOverTime = [];
 		for(const timestampString of vis.data.timestampStrings) {
-            if(!isNaN(+data[vis.teams[0]][vis.players[0]][timestampString].pos_y))
+            if(!isNaN(+vis.data[vis.teams[0]][vis.players[0]][timestampString].pos_y))
                 vis.dataOverTime.push({ "time": new Date(`2000-01-01T${timestampString}`), 
                                         "val": +vis.data[vis.teams[0]][vis.players[0]][timestampString].pos_y });
 		}
