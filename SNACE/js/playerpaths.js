@@ -39,14 +39,21 @@ class PlayerPaths {
             .domain(d3.extent(vis.data, d => d.z))
             .range([0, vis.height])
             .nice();
+
+        vis.xExtent = d3.extent(vis.data, d => d.x)
+        vis.zExtent = d3.extent(vis.data, d => d.z)
+
+        
+        vis.mapScale = d3.scaleLinear()
+            .domain(d3.extent(vis.xExtent.concat(vis.zExtent)))
+            .range([0, vis.height])
+            .nice();
     
-        vis.xAxis = d3.axisTop(vis.yScale)
-        vis.yAxis = d3.axisLeft(vis.yScale)
+        vis.xAxis = d3.axisTop(vis.mapScale)
+        vis.yAxis = d3.axisLeft(vis.mapScale)
         
         // vis.xAxisGrid = d3.axisBottom(vis.yScale).tickSize(-vis.containerHeight).tickFormat('')
         // vis.yAxisGrid = d3.axisBottom(vis.yScale).tickSize(-vis.containerWidth).tickFormat('')
-
-        console.log(vis.lines)
 
         vis.colorScale = d3.scaleOrdinal(d3.schemeTableau10)
             .domain(vis.lines)
@@ -68,23 +75,9 @@ class PlayerPaths {
         //     .call(vis.xAxisGrid)
         
         vis.line = d3.line()
-            .x(d => vis.yScale(vis.xValue(d)))
-            .y(d => vis.yScale(vis.yValue(d)))
+            .x(d => vis.mapScale(vis.xValue(d)))
+            .y(d => vis.mapScale(vis.yValue(d)))
             .curve(d3.curveLinear)
-            .on("mouseover", (event, d) => {
-                console.log(d)
-                d3.select("#tooltip")
-                    .style('display', 'block')
-                    .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
-                    .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
-                    .html(`
-                    <p>Discovery Method: ${d}</p>
-                    <p>Count: ${d}</p>
-                    `)
-            }).on('mouseout', (event, d) => {
-                d3.select("#tooltip")
-                    .style('display', 'none')
-            })
 
         
         
@@ -109,10 +102,11 @@ class PlayerPaths {
         vis.chart.selectAll('circle')
             .data(vis.lines)
             .join('circle')
-                .attr('cx', d => vis.yScale(vis.xValue(d[0])))
-                .attr('cy', d => vis.yScale(vis.yValue(d[0])))
+                .attr('cx', d => vis.mapScale(vis.xValue(d[0])))
+                .attr('cy', d => vis.mapScale(vis.yValue(d[0])))
                 .attr('r', "3")
                 .attr('fill', d => vis.colorScale(d))
                 .attr('stroke', "#3f3f3f")
     }
+
 }

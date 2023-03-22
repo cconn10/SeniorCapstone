@@ -8,13 +8,11 @@ d3.json('data/json/Kings_Row_Log.json')
   .then(_data => {
   	console.log('Data loading complete. Work with dataset.');
   	data = _data["King's Row"];
-    console.log(data);
 
 	const dataOverTime = [];
 	data.teams = Object.getOwnPropertyNames(data);
 	data.players = Object.getOwnPropertyNames(data[data.teams[0]]);
 	data.timestampStrings = Object.getOwnPropertyNames(data[data.teams[0]][data.players[0]]);
-	console.log(data.timestampStrings);
 	data.timestamps = [];
 	for(const property in data[data.teams[0]][data.players[0]]) {
 		data.timestamps.push(new Date(`2000-01-01T${property}`));
@@ -42,57 +40,52 @@ let player = "Reginald"
 
 let dataOverTime = []
 
-d3.json('data/json/Paraíso_Log.json')
+d3.json('data/json/2a6fbcaa-184c-4de4-87b7-8e2e88f924b3-Team-1-Team-2.json')
     .then(_data => {
-		data = _data["Para\\u00edso"]
-
-		console.log(_data)
+		data = _data["Blizzard World"]
 
 		const teams = Object.getOwnPropertyNames(data);
 		const players = Object.getOwnPropertyNames(data[teams[0]]);
 		const timestamps = Object.getOwnPropertyNames(data[teams[0]][players[0]]);
 
         for(let property in data[teams[0]][player]){
-            dataOverTime.push({time: property, x: +data[teams[0]][player][property]['pos_x'], z: +data[teams[0]][player][property]['pos_z'], death: data[teams[0]][player][property]['death'] })
+			if(!isNaN(+data[teams[0]][player][property]['pos_x']) && !isNaN(+data[teams[0]][player][property]['pos_z']))
+            	dataOverTime.push({time: new Date(`2000-01-01T${property}`), x: +data[teams[0]][player][property]['pos_x'], z: +data[teams[0]][player][property]['pos_z'], death: data[teams[0]][player][property]['death'] })
         }
         
         let currentLife = []
         let lives = []
-		let deathPosition = {}
 
         dataOverTime.forEach(timeStamp => {
+			if(timeStamp != dataOverTime[0]){
+				if(timeStamp.time - dataOverTime[dataOverTime.indexOf(timeStamp) - 1].time > 3000){
 
-        currentLife.push(timeStamp)
-            if(timeStamp.death){
-				console.log(currentLife)
+					trimRespawn(currentLife)
 
-				deathPosition = currentLife[0]
-				console.log(deathPosition)
-
-				while (true)
-				{
-					if(currentLife[0].x != deathPosition.x || currentLife[0].z != deathPosition.z)
-						break
-					else{
-						console.log(currentLife[0])
-						currentLife.splice(0, 1)
-					}
+					lives.push(currentLife)
+					currentLife = [timeStamp]
 				}
-				console.log(currentLife)
+			}
+
+			currentLife.push(timeStamp)
+
+            if(timeStamp.death){
+				trimRespawn(currentLife)
+
                 lives.push(currentLife)
                 currentLife = []
             }
         })
+		trimRespawn(currentLife)
         lives.push(currentLife)
 
 		//uncomment to see just one line
-		//lives = [lives[2]]
-
+		//lives = [lives[9]]
 		console.log(lives)
 
         playerPaths = new PlayerPaths({
             'parentElement': '#player-path',
-			'containerHeight': 700,
+			'containerHeight': 1000,
 			'containerWidth': 1500
         }, dataOverTime, lives)
 
@@ -115,3 +108,18 @@ d3.json('data/json/Paraíso_Log.json')
 			}
 			lineChart.updateVis();
 	});
+
+	function trimRespawn(currentLife){
+		
+		let deathPosition = currentLife[0]
+				
+		while (true)
+		{
+			if(currentLife[0].x != deathPosition.x || currentLife[0].z != deathPosition.z)
+
+				break
+			else{
+				currentLife.splice(0, 1)
+			}
+		}
+	}
