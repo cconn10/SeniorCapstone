@@ -67,7 +67,7 @@ class LineSimple {
 
         // Insert select elements before the chart (svg) within the parent div
         vis.teamSelect = vis.parent.insert('select', 'svg')
-            .style('display', 'block')    
+            .style('display', 'block')  
             .on('change', () => {
                 vis.players = Object.getOwnPropertyNames(vis.data[vis.teams[vis.teamSelect.property('value')]]);
                 vis.playerSelect.selectChildren('option').remove();
@@ -122,9 +122,9 @@ class LineSimple {
             vis.selectedPlayer = vis.players[vis.playerSelect.property('value')];
         } 
         else vis.selectedPlayer = vis.players[0];
-        console.log(vis.selectedPlayer);
-        console.log(vis.selectedTeam);
-        console.log(vis.data[vis.selectedTeam][vis.selectedPlayer]);
+        // console.log(vis.selectedPlayer);
+        // console.log(vis.selectedTeam);
+        // console.log(vis.data[vis.selectedTeam][vis.selectedPlayer]);
         vis.selectedProperty = vis.properties[vis.propSelect.property('value')];
         
         // Fill in array of {time, val} objects for graphing
