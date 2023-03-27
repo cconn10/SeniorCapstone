@@ -1,16 +1,16 @@
 console.log("Hello world");
 let data;
 
-let dataFile = 'data/json/2a6fbcaa-184c-4de4-87b7-8e2e88f924b3-Team-1-Team-2.json'
-let mapName = "Blizzard World"
+const DATAFILE = 'data/json/2a6fbcaa-184c-4de4-87b7-8e2e88f924b3-Team-1-Team-2.json'
+const MAP_NAME = "Blizzard World"
 
 // Initialize dispatcher that is used to orchestrate events
 const dispatcher = d3.dispatch('filterTime');
 
-d3.json(dataFile)
+d3.json(DATAFILE)
   .then(_data => {
   	console.log('Data loading complete. Work with dataset.');
-  	data = _data[mapName];
+  	data = _data[MAP_NAME];
 
 	data.teams = Object.getOwnPropertyNames(data);
 	data.players = Object.getOwnPropertyNames(data[data.teams[0]]);
@@ -23,8 +23,8 @@ d3.json(dataFile)
 
 	playerPaths = new PlayerPaths({
 		'parentElement': '#player-path',
-		'containerHeight': 300,
-		'containerWidth': 1500
+		'containerHeight': 900,
+		'containerWidth': 900
 	}, dispatcher, data)
 	playerPaths.updateVis()
 	
@@ -55,8 +55,6 @@ d3.json(dataFile)
 		'containerWidth': 1300
 	}, dispatcher, data);
 	timeline.updateVis();
-
-	console.log(lineChart.data.timestampStrings)
 
 });
 

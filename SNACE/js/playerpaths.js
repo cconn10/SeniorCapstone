@@ -5,7 +5,7 @@ class PlayerPaths {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 40, right: 0, bottom: 40, left: 50 }
+            margin: { top: 20, right: 10, bottom: 40, left: 50 }
         }
 
         this.dispatcher = _dispatcher
@@ -24,17 +24,24 @@ class PlayerPaths {
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom
 
         vis.chart = d3.select(vis.config.parentElement)
-            .attr('width', vis.width)
-            .attr('height', vis.height)
+            .attr('width', vis.config.containerWidth )
+            .attr('height', vis.config.containerHeight)
             .append('g')
                 .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
-        
+
+        vis.xScale = d3.scaleLinear()
+            .range([0, vis.width])
+            .nice();
+        vis.zScale = d3.scaleLinear()
+            .range([0, vis.height])
+            .nice();
+
         vis.mapScale = d3.scaleLinear()
             .range([0, vis.height])
             .nice();
     
-        vis.xAxis = d3.axisTop(vis.mapScale)
-        vis.yAxis = d3.axisLeft(vis.mapScale)
+        vis.xAxis = d3.axisTop(vis.xScale)
+        vis.yAxis = d3.axisLeft(vis.zScale)
         
         vis.colorScale = d3.scaleOrdinal(d3.schemeTableau10)
 
@@ -42,7 +49,12 @@ class PlayerPaths {
             .attr('class', 'axis x-axis')
     
         vis.yAxisG = vis.chart.append('g')
-            .attr('class', 'axis y-axis')        
+            .attr('class', 'axis y-axis')   
+
+        vis.line = d3.line()
+        .x(d => vis.xScale(vis.xValue(d)))
+        .y(d => vis.zScale(vis.yValue(d)))
+        .curve(d3.curveLinear)
         
     }
 
@@ -74,7 +86,6 @@ class PlayerPaths {
             while (true)
             {
                 if(currentLife[0].x != deathPosition.x || currentLife[0].z != deathPosition.z)
-    
                     break
                 else{
                     currentLife.splice(0, 1)
@@ -85,7 +96,6 @@ class PlayerPaths {
         vis.dataOverTime.forEach(timeStamp => {
 			if(timeStamp != vis.dataOverTime[0]){
 				if(timeStamp.time - vis.dataOverTime[vis.dataOverTime.indexOf(timeStamp) - 1].time > 3000){
-
 					vis.trimRespawn(currentLife)
 
 					vis.lives.push(currentLife)
@@ -106,9 +116,8 @@ class PlayerPaths {
         vis.lives.push(currentLife)
 
 
-        console.log(vis.lives)
 		//uncomment to see just one line
-		//vis.lives = [vis.lives[9]]
+		//vis.lives = [vis.lives[5]]
 
         vis.xValue = d => d.z;
         vis.yValue = d => d.x;
@@ -116,13 +125,26 @@ class PlayerPaths {
         vis.xExtent = d3.extent(vis.dataOverTime, d => vis.xValue(d))
         vis.zExtent = d3.extent(vis.dataOverTime, d => vis.yValue(d))
 
-        vis.mapScale.domain(d3.extent(vis.xExtent.concat(vis.zExtent)))
-        vis.colorScale.domain(vis.lives)
+        vis.xWidth = vis.xExtent[1] - vis.xExtent[0]
+        vis.zWidth = vis.zExtent[1] - vis.zExtent[0]
 
-        vis.line = d3.line()
-            .x(d => vis.mapScale(vis.xValue(d)))
-            .y(d => vis.mapScale(vis.yValue(d)))
-            .curve(d3.curveLinear)
+        if(vis.xWidth > vis.zWidth){
+            vis.xExtent[0] -= 10
+            vis.xExtent[1] += 10
+            vis.zExtent[0] -= (vis.xWidth - vis.zWidth)/2 + 10
+            vis.zExtent[1] += (vis.xWidth - vis.zWidth)/2 + 10
+        }
+        else {
+            vis.zExtent[0] -= 10
+            vis.zExtent[1] += 10
+            vis.xExtent[0] -= (vis.zWidth - vis.xWidth)/2 + 10
+            vis.xExtent[1] += ((vis.zWidth - vis.xWidth)/2 + 10)
+        }
+
+        vis.xScale.domain(vis.xExtent).nice()
+        vis.zScale.domain(vis.zExtent).nice()
+
+        vis.colorScale.domain(vis.lives)
             
         vis.renderVis()
 
@@ -131,20 +153,25 @@ class PlayerPaths {
     renderVis() {
         let vis = this
 
+        console.log(vis.lives)
+
         vis.chart.selectAll('path')
         .data(vis.lives)
         .join('path')
             .attr('d', d => vis.line(d))
             .attr('stroke', d => vis.colorScale(d))
+            .attr('stroke-width', 1)
+            .attr('opacity', 2)
             .attr('fill', 'none')
         vis.chart.selectAll('circle')
             .data(vis.lives)
             .join('circle')
-                .attr('cx', d => vis.mapScale(vis.xValue(d[0])))
-                .attr('cy', d => vis.mapScale(vis.yValue(d[0])))
-                .attr('r', "3")
+                .attr('cx', d => vis.xScale(vis.xValue(d[0])))
+                .attr('cy', d => vis.zScale(vis.yValue(d[0])))
+                .attr('r', 3)
                 .attr('fill', d => vis.colorScale(d))
                 .attr('stroke', "#3f3f3f")
+                .attr('stroke-width', 1)
 
         vis.xAxisG.call(vis.xAxis)
         vis.yAxisG.call(vis.yAxis)
