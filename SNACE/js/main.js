@@ -23,8 +23,8 @@ d3.json(DATAFILE)
 
 	playerPaths = new PlayerPaths({
 		'parentElement': '#player-path',
-		'containerHeight': 900,
-		'containerWidth': 900
+		'containerHeight': 500,
+		'containerWidth': 500
 	}, dispatcher, data)
 	playerPaths.updateVis()
 	
@@ -41,13 +41,6 @@ d3.json(DATAFILE)
 		'containerWidth': 1300
 	}, dispatcher, data);
 	lineChart2.updateVis();
-
-	lineChart3 = new LineSimple({
-		'parentElement': '#chart-three',
-		'containerHeight': 200,
-		'containerWidth': 1300
-	}, dispatcher, data);
-	lineChart3.updateVis();
 
 	timeline = new Timeline({
 		'parentElement': '#timeline',
