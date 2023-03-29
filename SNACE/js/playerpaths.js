@@ -30,10 +30,10 @@ class PlayerPaths {
                 .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
         vis.xScale = d3.scaleLinear()
-            .range([0, vis.width])
+            .range([vis.width, 0])
             .nice();
         vis.zScale = d3.scaleLinear()
-            .range([0, vis.height])
+            .range([vis.height, 0])
             .nice();
 
         vis.mapScale = d3.scaleLinear()
@@ -43,18 +43,13 @@ class PlayerPaths {
         vis.xAxis = d3.axisTop(vis.xScale)
         vis.yAxis = d3.axisLeft(vis.zScale)
         
-        vis.colorScale = d3.scaleOrdinal(d3.schemeTableau10)
+        vis.colorScale = d3.scaleOrdinal().range(d3.schemeTableau10)
 
         vis.xAxisG = vis.chart.append('g')
             .attr('class', 'axis x-axis')
     
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis')   
-
-        vis.line = d3.line()
-        .x(d => vis.xScale(vis.xValue(d)))
-        .y(d => vis.zScale(vis.yValue(d)))
-        .curve(d3.curveLinear)
         
     }
 
@@ -82,13 +77,15 @@ class PlayerPaths {
 
         vis.trimRespawn = function (currentLife) {
             let deathPosition = currentLife[0]
-                    
-            while (true)
-            {
-                if(currentLife[0].x != deathPosition.x || currentLife[0].z != deathPosition.z)
-                    break
-                else{
-                    currentLife.splice(0, 1)
+
+            if(currentLife.length > 0) {
+                while (true)
+                {
+                    if(currentLife[0].x != deathPosition.x || currentLife[0].z != deathPosition.z)
+                        break
+                    else{
+                        currentLife.splice(0, 1)
+                    }
                 }
             }
         }
@@ -112,10 +109,11 @@ class PlayerPaths {
                 currentLife = []
             }
         })
+        
 		vis.trimRespawn(currentLife)
         vis.lives.push(currentLife)
 
-
+        console.log(vis.lives)
 		//uncomment to see just one line
 		//vis.lives = [vis.lives[5]]
 
@@ -145,6 +143,11 @@ class PlayerPaths {
         vis.zScale.domain(vis.zExtent).nice()
 
         vis.colorScale.domain(vis.lives)
+
+        vis.line = d3.line()
+            .x(d => vis.xScale(vis.xValue(d)))
+            .y(d => vis.zScale(vis.yValue(d)))
+            .curve(d3.curveLinear)
             
         vis.renderVis()
 
@@ -152,8 +155,6 @@ class PlayerPaths {
 
     renderVis() {
         let vis = this
-
-        console.log(vis.lives)
 
         vis.chart.selectAll('path')
         .data(vis.lives)
