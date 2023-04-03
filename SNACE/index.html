@@ -4,19 +4,80 @@
     <title>SNACE</title>
     <meta charset="UTF-8">
     <link rel="icon" href="data:;base64,iVBORwOKGO=" />
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cardstyle.css">
+
+    <script src="https://kit.fontawesome.com/f9aa07f866.js" crossorigin="anonymous"></script>
 </head>
-<body>    
-    <div class="container">
+<body>
+    <header class="mdc-top-app-bar app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <span class="mdc-top-app-bar__title">SNACE</span>
+          </section>
+          <section class="mdc-top-app-bar__section app-bar-end" role="toolbar">
+            <button class="app-bar-btn" aria-label="Delete">Player Comparison</button>
+            <button class="app-bar-btn" aria-label="Share">Team View</button>
+            <button class="app-bar-btn" aria-label="Open menu">Single Player View</button>
+          </section>
+        </div>
+      </header>
+    <div class="container mdc-top-app-bar--fixed-adjust">
+        <div class="card" id="chart-selections"></div>
         <svg class="chart" id="chart-one"></svg>
         <svg class="chart" id="chart-two"></svg>
-        <svg class="chart" id="chart-three"></svg>
         <svg class="chart" id="player-path"></svg>
+        <img src="../SNACE//assets/Blizzard_World_Top_Down_View.jpg" id="blizzard-world-map" />
         <svg class="chart" id="timeline"></svg>
+        <div class="card svs-card" id="single-value-statistics">
+            <div id="player-name"></div>
+            <div id="team-name"></div>
+            <div id="elims" class="stat-group">
+                <div class="stat-title">Eliminations</div>
+                <div class="stat-label" id="total-elims-label">Total</div>
+                <div class="stat" id="total-elims"></div>
+                <div class="stat-label" id="elims-per-ten-label">Per 10 Minutes</div>
+                <div class="stat" id="elims-per-ten"></div>
+            </div>
+            <div id="damage-dealt" class="stat-group">
+                <div class="stat-title">Damage Dealt</div>
+                <div class="stat-label" id="total-damage-dealt-label">Total</div>
+                <div class="stat" id="total-damage-dealt"></div>
+                <div class="stat-label" id="damage-dealt-per-ten-label">Per 10 Minutes</div>
+                <div class="stat" id="damage-dealt-per-ten"></div>
+            </div>
+            <div id="damage-taken" class="stat-group">
+                <div class="stat-title">Damage Taken</div>
+                <div class="stat-label" id="total-damage-taken-label">Total</div>
+                <div class="stat" id="total-damage-taken"></div>
+                <div class="stat-label" id="damage-taken-per-ten-label">Per 10 Minutes</div>
+                <div class="stat" id="damage-taken-per-ten"></div>
+            </div>
+            <div id="healing" class="stat-group">
+                <div class="stat-title">Healing</div>
+                <div class="stat-label" id="total-healing-label">Total</div>
+                <div class="stat" id="total-healing"></div>
+                <div class="stat-label" id="healing-per-ten-label">Per 10 Minutes</div>
+                <div class="stat" id="healing-per-ten"></div>
+            </div>
+            <div id="deaths" class="stat-group">
+                <div class="stat-title">Deaths</div>
+                <div class="stat-label" id="total-deaths-label">Total</div>
+                <div class="stat" id="total-deaths"></div>
+                <div class="stat-label" id="deaths-per-ten-label">Per 10 Minutes</div>
+                <div class="stat" id="deaths-per-ten"></div>
+            </div>
+        </div>
     </div>
 
     <!-- D3 bundle -->
     <script src="js/d3.v6.min.js"></script>
+    
+    <!-- Material -->
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+    <!-- Font Awesome -->
 
     <!-- Our JS code -->
     <script src="js/main.js"></script>

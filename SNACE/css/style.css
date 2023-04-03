@@ -1,43 +1,98 @@
-div {
-    border: solid 1px black;
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin: 0;
+}
+
+.app-bar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    background-color: #DE6C83;
+    color: #fef;
+}
+.app-bar-end {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-items: center;
+}
+.app-bar-btn {
+    border: none;
+    background-color: transparent;
+    color: #fef;
+    margin: 0 10px;
+    font-size: 16px;
+}
+
+.app-bar-btn:hover {
+    color: #cbc;
 }
 
 .container {
-    margin: 3vh 0 0 2vw;
+    margin: 0 0 0 2vw;
     border: none;
     width: 95vw;
-    height: 90vh;
+    height: 91vh;
     display: grid;
-    grid-template-rows: [start] 20% [line2] 20% [line3] 50% [line4] 10% [end];
+    grid-template-rows: [start] 10% [line2] 10% [line3] 20% [line4] 10% [line5] 50% [end];
+    grid-template-columns: [start] 20% [line2] 40% [line3] 40% [end];
 }
-
+.title {
+    text-align: center;
+    font-size: 36px;
+}
 .chart {
     margin-bottom: 10px;
 }
 
+#chart-selections {
+    grid-row: start / line5;
+    grid-column: start / line2;
+    margin: 20px 0 20px 0;
+}
+
 #chart-one {
-    grid-row: start / line2;
+    grid-row: start / line3;
+    grid-column: line2 / end;
     display: flex;
     justify-self: center;
 }
 
 #chart-two {
-    grid-row: line2 / line3;
-    margin: 10px 0;
+    grid-row: line3 / line4;
+    grid-column: line2 / end;
     display: flex;
     justify-self: center;
 }
 
 #player-path {
-    margin: 40px 0;
-    grid-row: line3 / line4;
+    grid-row: line5 / end;
+    grid-column: line3 / end;
+    display: flex;
+    align-self: center;
+    justify-self: center;
+}
+
+#blizzard-world-map {
+    grid-row: line5 / end;
+    grid-column: line3 / end;
+    width: 330px;
+    height: 330px;
+    opacity: 0.3;
+    z-index: -100;
+    margin: 35px 30px 30px 45px;
+    display: flex;
+    align-self: center;
+    justify-self: center;
+}
+
+#timeline {
+    grid-row: line4 / line5;
+    grid-column: line2 / end;
     display: flex;
     justify-self: center;
 }
-#timeline {
+
+#single-value-statistics {
     grid-row: line5 / end;
-    display: flex;
-    justify-self: center;
+    grid-column: start / line3;
 }
 
 .inactive {
@@ -46,6 +101,10 @@ div {
 
 .axis-grid line {
     stroke: #def;
+}
+
+.toggleIcon {
+    cursor: pointer;
 }
 
 /*Tooltip*/
