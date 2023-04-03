@@ -22,7 +22,7 @@ d3.json('data/json/Kings_Row_Log.json')
 
     lineChart = new LineMulti({
 			'parentElement': '#line',
-			'containerHeight': 250,
+			'containerHeight': 300,
 			'containerWidth': 1500
 		}, dispatcher, data);
 	lineChart.updateVis();

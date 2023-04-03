@@ -44,7 +44,8 @@ class LineMulti {
 
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
-            .tickFormat(d3.timeFormat("%H:%M:%S"));
+            .tickFormat(d3.timeFormat("%H:%M:%S"))
+            .ticks(6);
         vis.yAxis = d3.axisLeft(vis.yScale);
 
         // Append x-axis group and move it to the bottom of the chart
@@ -55,6 +56,27 @@ class LineMulti {
         // Append y-axis group
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis')
+
+        // Empty tooltip group (hidden by default)
+        vis.tooltip = vis.chart.append('g')
+            .attr('class', 'tooltip')
+            .style('display', 'none');
+
+        vis.trackingArea = vis.chart.append('rect')
+            .attr('width', vis.width)
+            .attr('height', vis.height)
+            .attr('fill', 'none')
+            .attr('pointer-events', 'all');
+
+        vis.tooltip.append('path')
+            .attr('stroke',  "gray")
+            .attr('stroke-width', 2)
+            .attr('fill', 'none');
+
+        vis.tooltip.append('circle')
+            .attr('r', 3);
+
+        vis.tooltip.append('text');
         
         vis.teams = vis.data.teams;
         vis.properties = Object.getOwnPropertyNames(vis.data[vis.data.teams[0]][vis.data.players[0]][vis.data.timestampStrings[0]]);
@@ -119,7 +141,6 @@ class LineMulti {
         }
 
         for (const checkbox in vis.playerToggle) {
-            console.log(vis.playerToggle[checkbox]);
             vis.playerToggle[checkbox].attr('class', 'checkbox').on('click', () => {
                 vis.updateVis(); 
             });
@@ -128,7 +149,6 @@ class LineMulti {
 
 
     updateVis() { 
-        console.log("[lineMulti updateVis()]");
         let vis = this;
         
         vis.dataOverTime = {};
@@ -168,6 +188,8 @@ class LineMulti {
         vis.xScale.domain(d3.extent(vis.dataOverTimeAll, d => vis.xValue(d)));
         vis.yScale.domain(d3.extent(vis.dataOverTimeAll, d => vis.yValue(d)));
 
+        vis.bisectTime = d3.bisector(vis.xValue).left;
+
         vis.renderVis();
     }
 
@@ -193,6 +215,48 @@ class LineMulti {
                 .attr('visibility', 'visible')
                 .attr('d', vis.line);
         }
+
+        vis.trackingArea
+            .on('mouseenter', () => {
+                vis.tooltip.style('display', 'block');
+            })
+            .on('mouseleave', () => {
+                vis.tooltip.style('display', 'none');
+            })
+            .on('mousemove', function(event) {
+                // Get date that corresponds to current mouse x-coordinate
+                const xPos = d3.pointer(event, this)[0]; // First array element is x, second is y
+                const time = vis.xScale.invert(xPos);
+        
+                // Find nearest data point to mouse pointer:
+
+                // First get a player name whose line is being drawn/shown
+                const player_1 = Object.getOwnPropertyNames(vis.dataOverTime)[0];
+                
+                // Then use previously defined bisector to get the index of that player's dataOverTime array nearest to the mouse
+                const index = vis.bisectTime(vis.dataOverTime[player_1], time, 1);
+
+                // Check the values left and right of the mouse pointer to see which is actually closest
+                const a = vis.dataOverTime[player_1][index - 1];
+                const b = vis.dataOverTime[player_1][index];
+                const d = b && (time - a.time > b.time - time) ? b : a; 
+        
+                // Update tooltip
+                vis.tooltip.select('circle')
+                    .attr('transform', `translate(${vis.xScale(d.time)},${vis.yScale(d.val)})`);
+                
+                vis.tooltip.select('text')
+                    .attr('transform', `translate(${vis.xScale(d.time)},${(vis.yScale(d.val) - 15)})`)
+                    .text(Math.round(d.val));
+
+                // Data points to create a vertical line at d.time
+                let lineToolData = [{"time": d.time, "val": d3.min(vis.dataOverTimeAll, d => vis.yValue(d))}, 
+                                    {"time": d.time, "val": d3.max(vis.dataOverTimeAll, d => vis.yValue(d))}]
+
+                vis.tooltip.select('path')
+                    .data([lineToolData])
+                    .attr('d', vis.line);
+            });
 
         // Update the axes
         vis.xAxisG.call(vis.xAxis);
