@@ -59,5 +59,4 @@ d3.json(DATAFILE)
 					}
 				}}
 			lineChart.updateVis();
-			playerPaths.updateVis();
 	});
