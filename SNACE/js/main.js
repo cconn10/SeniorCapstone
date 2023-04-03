@@ -68,5 +68,4 @@ d3.json(DATAFILE)
 			lineChart.updateVis();
 			lineChart2.updateVis();
 			lineChart3.updateVis();
-			//playerPaths.updateVis();
 	});
