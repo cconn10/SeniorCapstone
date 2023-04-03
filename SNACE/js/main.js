@@ -1,28 +1,28 @@
 console.log("Hello world");
 let data;
+let lines = [];
 
 // Initialize dispatcher that is used to orchestrate events
 const dispatcher = d3.dispatch('filterTime');
 
 d3.json('data/json/Kings_Row_Log.json')
   .then(_data => {
-  	console.log('Data loading complete. Work with dataset.');
+  	
   	data = _data["King's Row"];
-    console.log(data);
 
 	const dataOverTime = [];
 	data.teams = Object.getOwnPropertyNames(data);
 	data.players = Object.getOwnPropertyNames(data[data.teams[0]]);
 	data.timestampStrings = Object.getOwnPropertyNames(data[data.teams[0]][data.players[0]]);
-	console.log(data.timestampStrings);
+
 	data.timestamps = [];
 	for(const property in data[data.teams[0]][data.players[0]]) {
 		data.timestamps.push(new Date(`2000-01-01T${property}`));
 	}
 
-    lineChart = new LineMulti({
+    lineChart = new LineSimple({
 			'parentElement': '#line',
-			'containerHeight': 300,
+			'containerHeight': 250,
 			'containerWidth': 1500
 		}, dispatcher, data);
 	lineChart.updateVis();
@@ -33,6 +33,14 @@ d3.json('data/json/Kings_Row_Log.json')
 		'containerWidth': 1500
 	}, dispatcher, data);
 	lineChart2.updateVis();
+
+	lines.push(lineChart);
+	lines.push(lineChart2);
+
+	lineSelect = new LineSelectSingle({
+		'parentElement': '#selections',
+		'lines': lines
+	}, dispatcher, data);
 
 	timeline = new Timeline({
 		'parentElement': '#timeline',
@@ -53,7 +61,7 @@ d3.json('data/json/Paraíso_Log.json')
     .then(_data => {
 		data = _data["Paraíso"]
 
-		console.log(_data)
+		// console.log(_data)
 
 		const teams = Object.getOwnPropertyNames(data);
 		const players = Object.getOwnPropertyNames(data[teams[0]]);
@@ -79,7 +87,7 @@ d3.json('data/json/Paraíso_Log.json')
 		//uncomment to see just one line
 		//lives = [lives[2]]
 
-		console.log(lives)
+		// console.log(lives)
 
         playerPaths = new PlayerPaths({
             'parentElement': '#player-path',
