@@ -35,14 +35,10 @@ class LineSelectSingle {
 
         vis.playerSelect = vis.parent.append('select')
             .style('display', 'block')    
-            .on('change', () => {
+            .on('change', (event, d) => {
                 // TODO: Dispatcher event to update all lines in lines[]
-                for (const line of vis.config.lines) {
-                    line.selectedTeam = vis.teams[Math.floor(vis.playerSelect.property('value') / 5)];
-                    line.selectedPlayer = vis.players[vis.playerSelect.property('value')];
-                    line.updateVis();
-                }
-                updateSVS(vis.playerSelect.property('value'), Math.floor(vis.playerSelect.property('value') / 5))
+                let selectedPlayer = parseInt(vis.playerSelect.property('value'))
+                vis.dispatcher.call('playerSelected', event, [selectedPlayer, Math.floor(selectedPlayer / 5)])
             });
 
         // Add optgroups to playerSelect for each team

@@ -15,7 +15,32 @@ d3.json(DATAFILE)
 	data.players = (Object.getOwnPropertyNames(data[data.teams[0]]).concat(Object.getOwnPropertyNames(data[data.teams[1]])));
 	data.timestampStrings = Object.getOwnPropertyNames(data[data.teams[0]][data.players[0]]);
 	data.timestamps = [];
-console.log(data.players)
+
+	let xExtent = []
+	let zExtent = []
+	let positions = []
+
+	for (player of data.players) {
+        for(const timestampString of data.timestampStrings){
+			let team = data.teams[Math.floor(data.players.indexOf(player)/5)]
+
+            let x = +data[team][player][timestampString]['pos_x']
+            let z = +data[team][player][timestampString]['pos_z']
+
+            if(!isNaN(x) && !isNaN(z))
+            	positions.push({
+                    x: x, 
+                    z: z})
+        }
+	}
+
+	xExtent = d3.extent(positions, d => d.x)
+	zExtent = d3.extent(positions, d => d.z)
+
+	let extents = normalizeExtent(xExtent, zExtent)
+	data.xRange = extents[0]
+	data.zRange = extents[1]
+
 	data.pathShown = 0
 
 	for(const property in data[data.teams[0]][data.players[0]]) {
@@ -81,6 +106,26 @@ console.log(data.players)
 			lineChart2.updateVis();
 	});
 
+	dispatcher.on('playerSelected', selection => {
+		let selectedPlayer = selection[0]
+		let selectedTeam = selection[1]
+
+		lineChart.selectedTeam = data.teams[selectedTeam];
+		lineChart.selectedPlayer = data.players[selectedPlayer];
+		lineChart.updateVis();
+
+		lineChart2.selectedTeam = data.teams[selectedTeam];
+		lineChart2.selectedPlayer = data.players[selectedPlayer];
+		lineChart2.updateVis();
+
+		playerPaths.selectedTeam = data.teams[selectedTeam];
+		playerPaths.selectedPlayer = data.players[selectedPlayer];
+		data.pathShown = 0
+		playerPaths.updateVis();
+		
+		updateSVS(selectedPlayer, selectedTeam)
+	})
+
 	dispatcher.on('nextPath', lifeCount => {
 		if(playerPaths.data.pathShown < lifeCount - 1)
 			playerPaths.data.pathShown++
@@ -98,14 +143,26 @@ console.log(data.players)
 	})
 
 function updateSVS(selectedPlayer = "", selectedTeam = ""){
-	console.log(selectedPlayer)
-	console.log(selectedTeam)
-	document.getElementById("player-name").innerText = data.players[selectedPlayer]
-	document.getElementById("team-name").innerText = data.teams[selectedTeam]
-
 	let playerData = data[data.teams[selectedTeam]][data.players[selectedPlayer]]
 	let length = data.timestampStrings.length
 	let lastTimestamp = data.timestampStrings[length - 1]
+
+	let heroes = []
+	let heroString = ""
+
+	for (let ts in playerData){
+		let hero = playerData[ts].hero
+		if(hero == "L\\u00facio")
+			hero = "L\u00facio"
+		if(!heroes.includes(hero) && hero !== undefined){
+			heroes.push(hero.normalize())
+		}
+	}
+
+	heroString = heroes.join(', ')
+
+	document.getElementById("player-name").innerText = data.players[selectedPlayer]
+	document.getElementById("team-name").innerText = data.teams[selectedTeam] + " - " + heroString
 
 	let elims = playerData[lastTimestamp].elims
 	let damageDealt = playerData[lastTimestamp].dmg_dealt
@@ -127,4 +184,25 @@ function updateSVS(selectedPlayer = "", selectedTeam = ""){
 
 	document.getElementById("total-deaths").innerText = deaths
 	document.getElementById("deaths-per-ten").innerText = ((deaths / length) * 600).toFixed(2)
+}
+
+function normalizeExtent(xExtent, zExtent) {
+
+	let xWidth = xExtent[1] - xExtent[0]
+	let zWidth = zExtent[1] - zExtent[0]
+
+	if(xWidth > zWidth){
+		xExtent[0] -= 10
+		xExtent[1] += 10
+		zExtent[0] -= (xWidth - zWidth)/2 + 10
+		zExtent[1] += (xWidth - zWidth)/2 + 10
+	}
+	else {
+		zExtent[0] -= 10
+		zExtent[1] += 10
+		xExtent[0] -= (zWidth - xWidth)/2 + 10
+		xExtent[1] += ((zWidth - xWidth)/2 + 10)
+	}
+
+	return [xExtent, zExtent]
 }
