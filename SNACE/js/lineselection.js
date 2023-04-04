@@ -70,9 +70,12 @@ class LineSelectSingle {
             
             // Populate each property select element with property names
             for (let j = 0; j < vis.properties.length; j++) {
-                vis.propSelect[i].append('option')
-                    .attr('value', j)
-                    .text(vis.properties[j]);
+                // Only add an option for properties with a defined label in LinePropLabels
+                if (vis.data.LinePropLabels.hasOwnProperty(vis.properties[j])) {
+                    vis.propSelect[i].append('option')
+                        .attr('value', j)
+                        .text(vis.data.LinePropLabels[vis.properties[j]]);
+                }
             }
 
             // Set default/initial properties for first two lines

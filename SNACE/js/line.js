@@ -5,7 +5,7 @@ class LineSimple {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 10, bottom: 5, right: 50, left: 50 }
+            margin: { top: 25, bottom: 5, right: 50, left: 50 }
         }
         
         this.dispatcher = _dispatcher;
@@ -59,7 +59,8 @@ class LineSimple {
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks("")
-        vis.yAxis = d3.axisLeft(vis.yScale);
+        vis.yAxis = d3.axisLeft(vis.yScale)
+            .ticks(7);
 
         // Append x-axis group and move it to the bottom of the chart
         vis.xAxisG = vis.chart.append('g')
@@ -176,22 +177,6 @@ class LineSimple {
                 const d = b && (time - a.time > b.time - time) ? b : a;
 
                 vis.dispatcher.call('lineTooltipMove', event, d.time);
-        
-                // // Update tooltip
-                // vis.tooltip.select('#tooltip-circle-hover')
-                //     .attr('transform', `translate(${vis.xScale(d.time)},${vis.yScale(d.val)})`);
-                
-                // vis.tooltip.select('#tooltip-text-hover')
-                //     .attr('transform', `translate(${vis.xScale(d.time)},${(vis.yScale(d.val) - 15)})`)
-                //     .text(Math.round(d.val));
-
-                // // Data points to create a vertical line at d.time
-                // let lineToolData = [{"time": d.time, "val": d3.min(vis.dataOverTime, d => vis.yValue(d))}, 
-                //                     {"time": d.time, "val": d3.max(vis.dataOverTime, d => vis.yValue(d))}]
-
-                // vis.tooltip.select('#tooltip-path-hover')
-                //     .data([lineToolData])
-                //     .attr('d', vis.line);
             });
 
         // Update the axes

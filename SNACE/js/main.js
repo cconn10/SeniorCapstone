@@ -16,6 +16,36 @@ d3.json(DATAFILE)
 	data.timestampStrings = Object.getOwnPropertyNames(data[data.teams[0]][data.players[0]]);
 	data.timestamps = [];
 
+	data.LinePropLabels = {
+		"dmg_dealt": "Damage Dealt",
+		"barrier_dmg_dealt": "Barrier Damage Dealt",
+		"dmg_blocked": "Damage Blocked",
+		"dmg_taken": "Damage Taken",
+		"deaths": "Deaths",
+		"elims": "Eliminations",
+		"final_blows": "Final Blows",
+		"enviro_deaths": "Environmental Deaths",
+		"enviro_kills": "Environmental Kills",
+		"healing_dealt": "Healing Dealt",
+		"obj_kills": "Objective Kills",
+		"solo_kills": "Solo Kills",
+		"ults_earned": "Ultimates Earned",
+		"ults_used": "Ultimates Used",
+		"healing_received": "Healing Received",
+		"ult_charge": "Ultimate Charge (%)",
+		"ability_1_cooldown": "Ability 1 Cooldown (s)",
+		"ability_2_cooldown": "Ability 2 Cooldown (s)",
+		"max_health": "Max Health",
+		"altitude": "Altitude",
+		"current_health": "Current Health",
+		"pos_x": "Position X",
+		"facing_x": "Camera Facing X",
+		"pos_y": "Position Y",
+		"facing_y": "Camera Facing Y",
+		"pos_z": "Position Z",
+		"facing_z": "Camera Facing Z"
+	}
+
 	data.pathShown = 0
 
 	for(const property in data[data.teams[0]][data.players[0]]) {
