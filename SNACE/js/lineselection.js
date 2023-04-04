@@ -42,6 +42,7 @@ class LineSelectSingle {
                     line.selectedPlayer = vis.players[vis.playerSelect.property('value')];
                     line.updateVis();
                 }
+                updateSVS(vis.playerSelect.property('value'), Math.floor(vis.playerSelect.property('value') / 5))
             });
 
         // Add optgroups to playerSelect for each team

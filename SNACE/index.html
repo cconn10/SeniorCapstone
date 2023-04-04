@@ -25,11 +25,32 @@
       </header>
     <div class="container mdc-top-app-bar--fixed-adjust">
         <div class="card" id="chart-selections"></div>
-        <svg class="chart" id="chart-one"></svg>
-        <svg class="chart" id="chart-two"></svg>
-        <svg class="chart" id="player-path"></svg>
-        <svg class="chart" id="timeline"></svg>
-        <img src="../SNACE//assets/Blizzard_World_Top_Down_View.jpg" id="blizzard-world-map" />
+        <svg class="long-chart" id="chart-one"></svg>
+        <svg class="long-chart" id="chart-two"></svg>
+        <svg class="long-chart" id="timeline"></svg>
+        <div id="player-path-container">
+            <svg class="chart" id="player-path"></svg>
+            <img src="../SNACE//assets/Blizzard_World_Top_Down_View.jpg" id="blizzard-world-map" />
+            <div class="mdc-slider mdc-slider--discrete" id="map-slider">
+                <input class="mdc-slider__input" type="range" min="0" max="100" value="50" name="volume" step="10" aria-label="Discrete slider demo">
+                <div class="mdc-slider__track">
+                    <div class="mdc-slider__track--inactive"></div>
+                    <div class="mdc-slider__track--active">
+                    <div class="mdc-slider__track--active_fill"></div>
+                    </div>
+                </div>
+                <div class="mdc-slider__thumb">
+                    <div class="mdc-slider__value-indicator-container" aria-hidden="true">
+                        <div class="mdc-slider__value-indicator">
+                            <span class="mdc-slider__value-indicator-text">
+                            50
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mdc-slider__thumb-knob"></div>
+                </div>
+            </div>
+        </div>
         <div class="card svs-card" id="single-value-statistics">
             <div id="player-name"></div>
             <div id="team-name"></div>

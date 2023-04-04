@@ -37,8 +37,9 @@ class PlayerPaths {
             .nice();
     
         vis.xAxisTop = d3.axisTop(vis.xScale)
+            .ticks("")
         vis.yAxisLeft = d3.axisLeft(vis.zScale)
-
+            .ticks("")
         vis.xAxisBottom = d3.axisTop(vis.xScale)
             .ticks("")
         vis.yAxisRight = d3.axisLeft(vis.zScale)
@@ -165,7 +166,7 @@ class PlayerPaths {
 
         vis.chart.append('text')
             .data(vis.lives)
-            .attr('x', -50)
+            .attr('x', -30)
             .attr('y', (vis.height / 2))
             .attr('fill', 'black')
             .attr('class', 'fa toggleIcon')

@@ -5,17 +5,17 @@ const MAP_NAME = "Blizzard World"
 let lines = [];
 
 // Initialize dispatcher that is used to orchestrate events
-const dispatcher = d3.dispatch('filterTime', 'nextPath', 'previousPath');
+const dispatcher = d3.dispatch('filterTime', 'playerSelected', 'nextPath', 'previousPath');
 
 d3.json(DATAFILE)
   .then(_data => {
   	data = _data[MAP_NAME];
 
 	data.teams = Object.getOwnPropertyNames(data);
-	data.players = Object.getOwnPropertyNames(data[data.teams[0]]);
+	data.players = (Object.getOwnPropertyNames(data[data.teams[0]]).concat(Object.getOwnPropertyNames(data[data.teams[1]])));
 	data.timestampStrings = Object.getOwnPropertyNames(data[data.teams[0]][data.players[0]]);
 	data.timestamps = [];
-
+console.log(data.players)
 	data.pathShown = 0
 
 	for(const property in data[data.teams[0]][data.players[0]]) {
@@ -26,22 +26,22 @@ d3.json(DATAFILE)
 
 	playerPaths = new PlayerPaths({
 		'parentElement': '#player-path',
-		'containerHeight': 450,
-		'containerWidth': 450
+		'containerHeight': 700,
+		'containerWidth':700
 	}, dispatcher, data)
 	playerPaths.updateVis()
 	
     lineChart = new LineSimple({
 		'parentElement': '#chart-one',
 		'containerHeight': 160,
-		'containerWidth': 1100
+		'containerWidth': 1000
 		}, dispatcher, data);
 	lineChart.updateVis();
 	
     lineChart2 = new LineSimple({
 		'parentElement': '#chart-two',
 		'containerHeight': 160,
-		'containerWidth': 1100
+		'containerWidth': 1000
 	}, dispatcher, data);
 	lineChart2.updateVis();
 
@@ -56,11 +56,11 @@ d3.json(DATAFILE)
 	timeline = new Timeline({
 		'parentElement': '#timeline',
 		'containerHeight': 100,
-		'containerWidth': 1100
+		'containerWidth': 1000
 	}, dispatcher, data);
 	timeline.updateVis();
 
-	updateSVS()
+	updateSVS(0,0)
 });
 
 	dispatcher.on('filterTime', selectedDomain => {
@@ -97,11 +97,13 @@ d3.json(DATAFILE)
 		playerPaths.updateVis()
 	})
 
-function updateSVS(_selectedPlayer = ""){
-	document.getElementById("player-name").innerText = data.players[0]
-	document.getElementById("team-name").innerText = data.teams[0]
+function updateSVS(selectedPlayer = "", selectedTeam = ""){
+	console.log(selectedPlayer)
+	console.log(selectedTeam)
+	document.getElementById("player-name").innerText = data.players[selectedPlayer]
+	document.getElementById("team-name").innerText = data.teams[selectedTeam]
 
-	let playerData = data[data.teams[0]][data.players[0]]
+	let playerData = data[data.teams[selectedTeam]][data.players[selectedPlayer]]
 	let length = data.timestampStrings.length
 	let lastTimestamp = data.timestampStrings[length - 1]
 
