@@ -5,7 +5,7 @@ class LineSimple {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 10, bottom: 30, right: 50, left: 50 }
+            margin: { top: 10, bottom: 5, right: 50, left: 50 }
         }
         
         this.dispatcher = _dispatcher;
@@ -44,7 +44,7 @@ class LineSimple {
 
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
-            .tickFormat(d3.timeFormat("%H:%M:%S"));
+            .ticks("")
         vis.yAxis = d3.axisLeft(vis.yScale);
 
         // Append x-axis group and move it to the bottom of the chart
@@ -67,7 +67,7 @@ class LineSimple {
         vis.players = Object.getOwnPropertyNames(vis.data[vis.teams[0]]);
         vis.dataOverTime = [];
 		for(const timestampString of vis.data.timestampStrings) {
-            if(!isNaN(+data[vis.teams[0]][vis.players[0]][timestampString].pos_y))
+            if(!isNaN(+vis.data[vis.teams[0]][vis.players[0]][timestampString].pos_y))
                 vis.dataOverTime.push({ "time": new Date(`2000-01-01T${timestampString}`), 
                                         "val": +vis.data[vis.teams[0]][vis.players[0]][timestampString].pos_y });
 		}
@@ -78,7 +78,7 @@ class LineSimple {
 
         // Set scale domains with processed data
         vis.xScale.domain(d3.extent(vis.dataOverTime, d => vis.xValue(d)));
-        vis.yScale.domain(d3.extent(vis.dataOverTime, d => vis.yValue(d)));
+        vis.yScale.domain(d3.extent(vis.dataOverTime, d => vis.yValue(d))).nice();
 
         vis.renderVis();
     }

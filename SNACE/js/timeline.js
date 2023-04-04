@@ -4,7 +4,7 @@ class Timeline {
 			parentElement: _config.parentElement,
 			containerWidth: _config.containerWidth || 500,
 			containerHeight: _config.containerHeight || 140,
-			margin: { top: 10, bottom: 30, right: 50, left: 50 }
+			margin: { top: 2, bottom: 50, right: 50, left: 50 }
         }
 		
 		this.dispatcher = _dispatcher;
