@@ -69,53 +69,37 @@ class LineSimple {
         // Append y-axis group
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis')
+
+        // Empty tooltip group (hidden by default)
+        vis.tooltip = vis.chart.append('g')
+            .attr('class', 'tooltip')
+            .style('display', 'none');
+
+        vis.tooltipClicked = false;
+
+        vis.trackingArea = vis.chart.append('rect')
+            .attr('width', vis.width)
+            .attr('height', vis.height)
+            .attr('fill', 'none')
+            .attr('pointer-events', 'all');
+
+        vis.tooltip.append('path')
+            .attr('class', 'tooltip-path hover')
+            .attr('id', 'tooltip-path-hover')
+            .attr('stroke',  "gray")
+            .attr('stroke-width', 2)
+            .attr('fill', 'none');
+
+        vis.tooltip.append('circle')
+            .attr('class', 'tooltip-circle hover')
+            .attr('id', 'tooltip-circle-hover')
+            .attr('r', 3);
+
+        vis.tooltip.append('text')
+            .attr('class', 'tooltip-text hover')
+            .attr('id', 'tooltip-text-hover');
         
         vis.properties = Object.getOwnPropertyNames(vis.data[vis.data.teams[0]][vis.data.players[0]][vis.data.timestampStrings[0]]);
-
-        // Insert select elements before the chart (svg) within the parent div
-        // vis.teamSelect = vis.parent.insert('select', 'svg')
-        //     .style('display', 'block')  
-        //     .on('change', () => {
-        //         vis.players = Object.getOwnPropertyNames(vis.data[vis.teams[vis.teamSelect.property('value')]]);
-        //         vis.playerSelect.selectChildren('option').remove();
-        //         for (let i = 0; i < vis.players.length; i++) {
-        //             vis.playerSelect.append('option')
-        //                 .attr('value', String(i))
-        //                 .text(vis.players[i]);
-        //         }
-                
-        //         vis.updateVis();
-        //     });
-        
-        // vis.playerSelect = vis.parent.insert('select', 'svg')
-        //     .style('display', 'block')    
-        //     .on('change', () => {
-        //         vis.updateVis();
-        //     });
-
-        // vis.propSelect = vis.parent.insert('select', 'svg')
-        //     .style('display', 'block')    
-        //     .on('change', () => {
-        //         vis.updateVis();
-        //     });
-
-        // for (let i = 0; i < vis.data.teams.length; i++) {
-        //     vis.teamSelect.append('option')
-        //         .attr('value', String(i))
-        //         .text(vis.teams[i]);
-        // }
-
-        // for (let i = 0; i < vis.players.length; i++) {
-        //     vis.playerSelect.append('option')
-        //         .attr('value', String(i))
-        //         .text(vis.players[i]);
-        // }
-        
-        // for (let i = 0; i < vis.properties.length; i++) {
-        //     vis.propSelect.append('option')
-        //         .attr('value', String(i))
-        //         .text(vis.properties[i]);
-        // }
 
         // Default/initial selection
         vis.selectedTeam = vis.teams[0];
@@ -155,6 +139,8 @@ class LineSimple {
         vis.xScale.domain(d3.extent(vis.dataOverTime, d => vis.xValue(d)));
         vis.yScale.domain(d3.extent(vis.dataOverTime, d => vis.yValue(d))).nice();
 
+        vis.bisectTime = d3.bisector(vis.xValue).left;
+
         vis.renderVis();
     }
 
@@ -174,6 +160,45 @@ class LineSimple {
             .attr('stroke-width', 2)
             .attr('fill', 'none')
             .attr('d', vis.line);
+
+            vis.trackingArea
+            .on('mouseenter', () => {
+                vis.tooltip.select('.hover').style('display', 'block');
+            })
+            .on('mouseleave', () => {
+                vis.tooltip.select('.hover').style('display', 'none');
+            })
+            .on('mousemove', function(event) {
+                // Get date that corresponds to current mouse x-coordinate
+                const xPos = d3.pointer(event, this)[0]; // First array element is x, second is y
+                const time = vis.xScale.invert(xPos);
+        
+                // Find nearest data point to mouse pointer:
+                
+                // Use previously defined bisector to get the index of that player's dataOverTime array nearest to the mouse
+                const index = vis.bisectTime(vis.dataOverTime, time, 1);
+
+                // Check the values left and right of the mouse pointer to see which is actually closest
+                const a = vis.dataOverTime[index - 1];
+                const b = vis.dataOverTime[index];
+                const d = b && (time - a.time > b.time - time) ? b : a; 
+        
+                // Update tooltip
+                vis.tooltip.select('#tooltip-circle-hover')
+                    .attr('transform', `translate(${vis.xScale(d.time)},${vis.yScale(d.val)})`);
+                
+                vis.tooltip.select('#tooltip-text-hover')
+                    .attr('transform', `translate(${vis.xScale(d.time)},${(vis.yScale(d.val) - 15)})`)
+                    .text(Math.round(d.val));
+
+                // Data points to create a vertical line at d.time
+                let lineToolData = [{"time": d.time, "val": d3.min(vis.dataOverTime, d => vis.yValue(d))}, 
+                                    {"time": d.time, "val": d3.max(vis.dataOverTime, d => vis.yValue(d))}]
+
+                vis.tooltip.select('#tooltip-path-hover')
+                    .data([lineToolData])
+                    .attr('d', vis.line);
+            });
 
         // Update the axes
         vis.xAxisG.call(vis.xAxis);

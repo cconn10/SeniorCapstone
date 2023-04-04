@@ -5,7 +5,7 @@ const MAP_NAME = "Blizzard World"
 let lines = [];
 
 // Initialize dispatcher that is used to orchestrate events
-const dispatcher = d3.dispatch('filterTime', 'nextPath', 'previousPath');
+const dispatcher = d3.dispatch('filterTime', 'lineTooltipMove', 'lineTooltipClick', 'nextPath', 'previousPath');
 
 d3.json(DATAFILE)
   .then(_data => {
@@ -79,6 +79,14 @@ d3.json(DATAFILE)
 				}}
 			lineChart.updateVis();
 			lineChart2.updateVis();
+	});
+
+	dispatcher.on('lineTooltipMove', timestamp => {
+
+	});
+
+	dispatcher.on('lineTooltipClick', timestamp => {
+
 	});
 
 	dispatcher.on('nextPath', lifeCount => {
