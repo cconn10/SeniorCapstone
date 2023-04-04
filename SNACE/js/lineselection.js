@@ -74,6 +74,19 @@ class LineSelectSingle {
                     .attr('value', j)
                     .text(vis.properties[j]);
             }
+
+            // Set default/initial properties for first two lines
+            if (i == 0) {
+                vis.propSelect[i].select('option[value="8"]').attr('selected', true);
+                // vis.propSelect[i].attr('value', 8);
+            }
+            if (i == 1) {
+                vis.propSelect[i].select('option[value="11"]').attr('selected', true);
+                // vis.propSelect[i].attr('value', 11);
+            }
+
+            vis.config.lines[i].selectedProperty = vis.properties[vis.propSelect[i].property('value')];
+            vis.config.lines[i].updateVis();
         }
     }
 

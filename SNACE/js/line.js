@@ -70,10 +70,9 @@ class LineSimple {
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis')
 
-        // Empty tooltip group (hidden by default)
+        // Empty tooltip group
         vis.tooltip = vis.chart.append('g')
             .attr('class', 'tooltip')
-            .style('display', 'none');
 
         vis.tooltipClicked = false;
 
@@ -88,16 +87,19 @@ class LineSimple {
             .attr('id', 'tooltip-path-hover')
             .attr('stroke',  "gray")
             .attr('stroke-width', 2)
-            .attr('fill', 'none');
+            .attr('fill', 'none')
+            .attr('display', 'none');
 
         vis.tooltip.append('circle')
             .attr('class', 'tooltip-circle hover')
             .attr('id', 'tooltip-circle-hover')
-            .attr('r', 3);
+            .attr('r', 3)
+            .attr('display', 'none');
 
         vis.tooltip.append('text')
             .attr('class', 'tooltip-text hover')
-            .attr('id', 'tooltip-text-hover');
+            .attr('id', 'tooltip-text-hover')
+            .attr('display', 'none');
         
         vis.properties = Object.getOwnPropertyNames(vis.data[vis.data.teams[0]][vis.data.players[0]][vis.data.timestampStrings[0]]);
 
@@ -112,16 +114,6 @@ class LineSimple {
         let vis = this;
         
         vis.dataOverTime = [];
-        // Find selected team, player, property from dropdowns
-        // vis.selectedTeam = vis.teams[vis.teamSelect.property('value')];
-        // if (vis.playerSelect.property('value')) {
-        //     vis.selectedPlayer = vis.players[vis.playerSelect.property('value')];
-        // } 
-        // else vis.selectedPlayer = vis.players[0];
-        // console.log(vis.selectedPlayer);
-        // console.log(vis.selectedTeam);
-        // console.log(vis.data[vis.selectedTeam][vis.selectedPlayer]);
-        // vis.selectedProperty = vis.properties[vis.propSelect.property('value')];
         
         // Fill in array of {time, val} objects for graphing
 		for(const timestampString of vis.data.timestampStrings) {
@@ -162,11 +154,11 @@ class LineSimple {
             .attr('d', vis.line);
 
             vis.trackingArea
-            .on('mouseenter', () => {
-                vis.tooltip.select('.hover').style('display', 'block');
+            .on('mouseenter', (event) => {
+                vis.dispatcher.call('lineTooltipEnter', event);
             })
-            .on('mouseleave', () => {
-                vis.tooltip.select('.hover').style('display', 'none');
+            .on('mouseleave', (event) => {
+                vis.dispatcher.call('lineTooltipLeave', event);
             })
             .on('mousemove', function(event) {
                 // Get date that corresponds to current mouse x-coordinate
@@ -181,23 +173,25 @@ class LineSimple {
                 // Check the values left and right of the mouse pointer to see which is actually closest
                 const a = vis.dataOverTime[index - 1];
                 const b = vis.dataOverTime[index];
-                const d = b && (time - a.time > b.time - time) ? b : a; 
+                const d = b && (time - a.time > b.time - time) ? b : a;
+
+                vis.dispatcher.call('lineTooltipMove', event, d.time);
         
-                // Update tooltip
-                vis.tooltip.select('#tooltip-circle-hover')
-                    .attr('transform', `translate(${vis.xScale(d.time)},${vis.yScale(d.val)})`);
+                // // Update tooltip
+                // vis.tooltip.select('#tooltip-circle-hover')
+                //     .attr('transform', `translate(${vis.xScale(d.time)},${vis.yScale(d.val)})`);
                 
-                vis.tooltip.select('#tooltip-text-hover')
-                    .attr('transform', `translate(${vis.xScale(d.time)},${(vis.yScale(d.val) - 15)})`)
-                    .text(Math.round(d.val));
+                // vis.tooltip.select('#tooltip-text-hover')
+                //     .attr('transform', `translate(${vis.xScale(d.time)},${(vis.yScale(d.val) - 15)})`)
+                //     .text(Math.round(d.val));
 
-                // Data points to create a vertical line at d.time
-                let lineToolData = [{"time": d.time, "val": d3.min(vis.dataOverTime, d => vis.yValue(d))}, 
-                                    {"time": d.time, "val": d3.max(vis.dataOverTime, d => vis.yValue(d))}]
+                // // Data points to create a vertical line at d.time
+                // let lineToolData = [{"time": d.time, "val": d3.min(vis.dataOverTime, d => vis.yValue(d))}, 
+                //                     {"time": d.time, "val": d3.max(vis.dataOverTime, d => vis.yValue(d))}]
 
-                vis.tooltip.select('#tooltip-path-hover')
-                    .data([lineToolData])
-                    .attr('d', vis.line);
+                // vis.tooltip.select('#tooltip-path-hover')
+                //     .data([lineToolData])
+                //     .attr('d', vis.line);
             });
 
         // Update the axes

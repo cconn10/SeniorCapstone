@@ -5,7 +5,7 @@ const MAP_NAME = "Blizzard World"
 let lines = [];
 
 // Initialize dispatcher that is used to orchestrate events
-const dispatcher = d3.dispatch('filterTime', 'lineTooltipMove', 'lineTooltipClick', 'nextPath', 'previousPath');
+const dispatcher = d3.dispatch('filterTime','lineTooltipEnter', 'lineTooltipLeave', 'lineTooltipMove', 'lineTooltipClick', 'nextPath', 'previousPath');
 
 d3.json(DATAFILE)
   .then(_data => {
@@ -81,8 +81,38 @@ d3.json(DATAFILE)
 			lineChart2.updateVis();
 	});
 
-	dispatcher.on('lineTooltipMove', timestamp => {
+	dispatcher.on('lineTooltipEnter', () => {
+		for (const line of lines) {
+			line.tooltip.selectAll('.hover').style('display', 'block');
+		}
+	});
 
+	dispatcher.on('lineTooltipLeave', () => {
+		for (const line of lines) {
+			line.tooltip.selectAll('.hover').style('display', 'none');
+		}
+	});
+
+	dispatcher.on('lineTooltipMove', timestamp => {
+		for (const line of lines) {
+			const index = line.bisectTime(line.dataOverTime, timestamp, 1);
+			const d = line.dataOverTime[index];
+
+			line.tooltip.select('#tooltip-circle-hover')
+				.attr('transform', `translate(${line.xScale(d.time)},${line.yScale(d.val)})`);
+                
+			line.tooltip.select('#tooltip-text-hover')
+				.attr('transform', `translate(${line.xScale(d.time)},${(line.yScale(d.val) - 15)})`)
+				.text(Math.round(d.val));
+
+			// Data points to create a vertical line at d.time
+			let lineToolData = [{"time": d.time, "val": d3.min(line.dataOverTime, d => line.yValue(d))}, 
+								{"time": d.time, "val": d3.max(line.dataOverTime, d => line.yValue(d))}]
+
+			line.tooltip.select('#tooltip-path-hover')
+				.data([lineToolData])
+				.attr('d', line.line);
+		}
 	});
 
 	dispatcher.on('lineTooltipClick', timestamp => {
