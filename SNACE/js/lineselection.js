@@ -60,7 +60,6 @@ class LineSelectSingle {
         // Add property select element for EACH line
         vis.propSelect = [];
         for (let i = 0; i < vis.config.lines.length; i++) {
-            console.log(i)
             vis.propSelect[i] = vis.parent.append('select')
                 .style('display', 'block')    
                 .on('change', () => {

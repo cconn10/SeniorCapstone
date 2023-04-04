@@ -1,4 +1,3 @@
-console.log("Hello world");
 let data;
 
 const DATAFILE = 'data/json/2a6fbcaa-184c-4de4-87b7-8e2e88f924b3-Team-1-Team-2.json'
@@ -10,7 +9,6 @@ const dispatcher = d3.dispatch('filterTime', 'nextPath', 'previousPath');
 
 d3.json(DATAFILE)
   .then(_data => {
-  	console.log('Data loading complete. Work with dataset.');
   	data = _data[MAP_NAME];
 
 	data.teams = Object.getOwnPropertyNames(data);
@@ -51,7 +49,7 @@ d3.json(DATAFILE)
 	lines.push(lineChart2);
 
 	lineSelect = new LineSelectSingle({
-		'parentElement': '#selections',
+		'parentElement': '#chart-selections',
 		'lines': lines
 	}, dispatcher, data);
 
@@ -72,7 +70,6 @@ d3.json(DATAFILE)
 				lineChart.data = data;
 			} else {
 				lineChart2.data.timestampStrings = [];
-				// console.log(lineChart.data[lineChart.data.selectedTeam][lineChart.data.selectedPlayer]);
 				for(const timestampSting in lineChart.data[lineChart2.selectedTeam][lineChart2.selectedPlayer]) {
 					let timestampTemp = new Date(`2000-01-01T${timestampSting}`);
 					if (selectedDomain[0] <= timestampTemp && timestampTemp <= selectedDomain[1]) {
@@ -93,7 +90,6 @@ d3.json(DATAFILE)
 	})
 
 	dispatcher.on('previousPath', lifeCount => {
-		console.log(lifeCount)
 		if(playerPaths.data.pathShown > 0)
 			playerPaths.data.pathShown--
 		else
