@@ -24,20 +24,24 @@ class PlayerPaths {
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom
 
         vis.chart = d3.select(vis.config.parentElement)
-            .attr('width', vis.config.containerWidth )
+            .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight)
             .append('g')
                 .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
         vis.xScale = d3.scaleLinear()
             .range([vis.width, 0])
+            .domain(vis.data.xRange)
             .nice();
         vis.zScale = d3.scaleLinear()
             .range([vis.height, 0])
+            .domain(vis.data.zRange)
             .nice();
     
         vis.xAxisTop = d3.axisTop(vis.xScale)
+            .ticks("")
         vis.yAxisLeft = d3.axisLeft(vis.zScale)
+            .ticks("")
 
         vis.xAxisBottom = d3.axisTop(vis.xScale)
             .ticks("")
@@ -57,6 +61,9 @@ class PlayerPaths {
         vis.yAxisRightGroup = vis.chart.append('g')
             .attr('class', 'axis y-axis')   
 			.attr('transform', `translate(${vis.width}, 0)`)
+
+        vis.selectedTeam = vis.teams[0]
+        vis.selectedPlayer = vis.players[0]
     }
 
     updateVis() {
@@ -64,9 +71,6 @@ class PlayerPaths {
 
         vis.dataOverTime = []
         vis.lives = []
-
-        vis.selectedTeam = vis.teams[0]
-        vis.selectedPlayer = vis.players[0]
 
         let currentLife = []
 
@@ -81,21 +85,19 @@ class PlayerPaths {
                     death: vis.data[vis.selectedTeam][vis.selectedPlayer][timestampString]['death'] })
         }
 
-        vis.trimRespawn = function (currentLife) {
+        vis.trimRespawn = function(currentLife) {
             let deathPosition = currentLife[0]
 
-            if(currentLife.length > 0) {
-                while (true)
-                {
-                    if(currentLife[0].x != deathPosition.x || currentLife[0].z != deathPosition.z)
-                        break
-                    else{
-                        currentLife.splice(0, 1)
-                    }
+            while (currentLife.length > 0)
+            {
+                if(currentLife[0].x != deathPosition.x || currentLife[0].z != deathPosition.z)
+                    break
+                else{
+                    currentLife.splice(0, 1)
                 }
             }
-        }
 
+        }
         vis.dataOverTime.forEach(timeStamp => {
 			if(timeStamp != vis.dataOverTime[0]){
 				if(timeStamp.time - vis.dataOverTime[vis.dataOverTime.indexOf(timeStamp) - 1].time > 3000){
@@ -118,31 +120,10 @@ class PlayerPaths {
         
 		vis.trimRespawn(currentLife)
         vis.lives.push(currentLife)
+        vis.lives = vis.lives.filter(l => l.length > 0)
 
         vis.xValue = d => d.x;
         vis.yValue = d => d.z;
-        
-        vis.xExtent = d3.extent(vis.dataOverTime, d => vis.xValue(d))
-        vis.zExtent = d3.extent(vis.dataOverTime, d => vis.yValue(d))
-
-        vis.xWidth = vis.xExtent[1] - vis.xExtent[0]
-        vis.zWidth = vis.zExtent[1] - vis.zExtent[0]
-
-        if(vis.xWidth > vis.zWidth){
-            vis.xExtent[0] -= 10
-            vis.xExtent[1] += 10
-            vis.zExtent[0] -= (vis.xWidth - vis.zWidth)/2 + 10
-            vis.zExtent[1] += (vis.xWidth - vis.zWidth)/2 + 10
-        }
-        else {
-            vis.zExtent[0] -= 10
-            vis.zExtent[1] += 10
-            vis.xExtent[0] -= (vis.zWidth - vis.xWidth)/2 + 10
-            vis.xExtent[1] += ((vis.zWidth - vis.xWidth)/2 + 10)
-        }
-
-        vis.xScale.domain(vis.xExtent).nice()
-        vis.zScale.domain(vis.zExtent).nice()
 
         vis.colorScale.domain(vis.lives)
 
@@ -165,7 +146,7 @@ class PlayerPaths {
 
         vis.chart.append('text')
             .data(vis.lives)
-            .attr('x', -50)
+            .attr('x', -30)
             .attr('y', (vis.height / 2))
             .attr('fill', 'black')
             .attr('class', 'fa toggleIcon')
@@ -174,6 +155,13 @@ class PlayerPaths {
             .on('click', (event, d) => {
                 vis.dispatcher.call('previousPath', event, vis.lives.length)
             });
+
+        vis.chart.append('text')
+            .attr('x', vis.width*0.75)
+            .attr('y', vis.height + 15)
+            .attr('fill', 'black')
+            .attr('font-size', '12px')
+            .html(`Image courtesy of <a href="https://statbanana.com/images" target="_blank">Statbanana</a>`)
         
         vis.lives.displayedLife = [vis.lives[vis.data.pathShown]]
         //vis.lives.displayedLife = vis.lives
