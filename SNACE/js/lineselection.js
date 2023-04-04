@@ -67,10 +67,26 @@ class LineSelectSingle {
             
             // Populate each property select element with property names
             for (let j = 0; j < vis.properties.length; j++) {
-                vis.propSelect[i].append('option')
-                    .attr('value', j)
-                    .text(vis.properties[j]);
+                // Only add an option for properties with a defined label in LinePropLabels
+                if (vis.data.LinePropLabels.hasOwnProperty(vis.properties[j])) {
+                    vis.propSelect[i].append('option')
+                        .attr('value', j)
+                        .text(vis.data.LinePropLabels[vis.properties[j]]);
+                }
             }
+
+            // Set default/initial properties for first two lines
+            if (i == 0) {
+                vis.propSelect[i].select('option[value="8"]').attr('selected', true);
+                // vis.propSelect[i].attr('value', 8);
+            }
+            if (i == 1) {
+                vis.propSelect[i].select('option[value="11"]').attr('selected', true);
+                // vis.propSelect[i].attr('value', 11);
+            }
+
+            vis.config.lines[i].selectedProperty = vis.properties[vis.propSelect[i].property('value')];
+            vis.config.lines[i].updateVis();
         }
     }
 
