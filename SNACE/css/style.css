@@ -2,7 +2,14 @@ body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     margin: 0;
 }
+a {
+    fill: #006eff;
+    text-decoration: underline;
+}
 
+a:hover {
+    fill: #004299;
+}
 .app-bar {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     background-color: #DE6C83;
@@ -32,14 +39,16 @@ body {
     height: 91vh;
     display: grid;
     grid-template-rows: [start] 10% [line2] 10% [line3] 20% [line4] 10% [line5] 50% [end];
-    grid-template-columns: [start] 20% [line2] 40% [line3] 40% [end];
+    grid-template-columns: [start] 10% [line2] 40% [line3] 15% [line4] 35% [end];
 }
 .title {
     text-align: center;
     font-size: 36px;
 }
-.chart {
+.long-chart {
     margin-bottom: 10px;
+    display: flex;
+    justify-self: start;
 }
 
 #chart-selections {
@@ -51,43 +60,53 @@ body {
 #chart-one {
     grid-row: start / line3;
     grid-column: line2 / end;
-    display: flex;
-    justify-self: center;
 }
 
 #chart-two {
     grid-row: line3 / line4;
     grid-column: line2 / end;
-    display: flex;
-    justify-self: center;
 }
+#player-path-container {
+    grid-row: start / end;
+    grid-column: line4 / end;
 
+    display: grid;
+    grid-template-rows: [start] 5% [line2] 80% [line3] 15% [end];
+    grid-template-columns: [start] 100% [end];
+}
 #player-path {
-    grid-row: line5 / end;
-    grid-column: line3 / end;
+    grid-row: start / line3;
+    grid-column: start / end;
+    position: relative;
     display: flex;
     align-self: center;
     justify-self: center;
 }
 
 #blizzard-world-map {
-    grid-row: line5 / end;
-    grid-column: line3 / end;
-    width: 330px;
-    height: 330px;
+    grid-row: start / line3;
+    grid-column: start / end;
+    width: 550px;
+    height: 550px;
     opacity: 0.3;
     z-index: -100;
-    margin: 35px 30px 30px 45px;
+    margin: 65px 30px 30px 45px;
     display: flex;
     align-self: center;
+    justify-self: center;
+}
+
+#map-slider {
+    grid-row: line3 / end;
+    grid-column: start / end;
+    width: 100%;
+    display: flex;
     justify-self: center;
 }
 
 #timeline {
     grid-row: line4 / line5;
     grid-column: line2 / end;
-    display: flex;
-    justify-self: center;
 }
 
 #single-value-statistics {
