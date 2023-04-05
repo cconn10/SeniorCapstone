@@ -37,7 +37,7 @@ class LineSimple {
 
         vis.colorScale = d3.scaleOrdinal()
             .domain(vis.players)
-            .range(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"]);
+            .range(["#8c74b5","#8952a5","#852d8f","#730f71","#4d004b","#fa5c2e","#ec3023","#d31121","#af0225","#800026"]);
 
         // Define size of SVG drawing area
         vis.svg = d3.select(vis.config.parentElement)

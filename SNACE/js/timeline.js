@@ -4,7 +4,7 @@ class Timeline {
 			parentElement: _config.parentElement,
 			containerWidth: _config.containerWidth || 500,
 			containerHeight: _config.containerHeight || 140,
-			margin: { top: 2, bottom: 50, right: 50, left: 50 }
+			margin: { top: 5, bottom: 45, right: 50, left: 50 }
         }
 		
 		this.dispatcher = _dispatcher;
@@ -21,6 +21,12 @@ class Timeline {
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
         
+        vis.teams = vis.data.teams;
+        
+        // Fill array with all 10 player names (5 from each team object)
+        vis.players = Object.getOwnPropertyNames(vis.data[vis.teams[0]]);
+        vis.players = vis.players.concat(Object.getOwnPropertyNames(vis.data[vis.teams[1]]));
+
 		// Define size of SVG drawing area
 		vis.svg = d3.select(vis.config.parentElement)
 			.attr('width', vis.config.containerWidth)
@@ -32,6 +38,7 @@ class Timeline {
 
         // Initialize scales with only range (domain is dependent on data filtering in updateVis())
         vis.xScale = d3.scaleTime()
+			.domain(d3.extent(vis.data.timestamps))
             .range([0, vis.width]);
         
         // TODO: Use altitude data for y axis?
@@ -59,6 +66,9 @@ class Timeline {
 
 		vis.brushG = vis.chart.append('g')
 			.attr('class', 'brush x-brush');
+
+		vis.selectedPlayer = vis.players[0]
+		vis.selectedTeam = vis.teams[0]
 	}
 
 	updateVis() {
@@ -66,27 +76,146 @@ class Timeline {
 
 		// Process timestamps from data, set axis domain
 		// (This is in updateVis() for consistency but only happens once; timeline axis is "constant")
-		vis.teams = Object.getOwnPropertyNames(vis.data);
-        vis.players = Object.getOwnPropertyNames(vis.data[vis.teams[0]]);
-		vis.timestamps = [];
-		for(const property in vis.data[vis.teams[0]][vis.players[0]]) {
-        	vis.timestamps.push(new Date(`2000-01-01T${property}`));
-		}
 
-		vis.xScale.domain(d3.extent(vis.timestamps));
+		vis.timestamps = [];
+		vis.deaths = [];
+		vis.finalBlows = [];
+
+        vis.dataOverTime = []
+        vis.lives = []
+
+        let currentLife = []
+
+        for(const timestampString of vis.data.timestampStrings){
+            let x = +vis.data[vis.selectedTeam][vis.selectedPlayer][timestampString]['pos_x']
+            let z = +vis.data[vis.selectedTeam][vis.selectedPlayer][timestampString]['pos_z']
+
+            if(!isNaN(x) && !isNaN(z))
+            	vis.dataOverTime.push({time: new Date(`2000-01-01T${timestampString}`), 
+                    x: x, 
+                    z: z, 
+                    death: vis.data[vis.selectedTeam][vis.selectedPlayer][timestampString]['death'] })
+        }
+
+        vis.trimRespawn = function(currentLife) {
+            let deathPosition = currentLife[0]
+
+            while (currentLife.length > 0)
+            {
+                if(currentLife[0].x != deathPosition.x || currentLife[0].z != deathPosition.z)
+                    break
+                else{
+                    currentLife.splice(0, 1)
+                }
+            }
+
+        }
+        vis.dataOverTime.forEach(timeStamp => {
+			if(timeStamp != vis.dataOverTime[0]){
+				if(timeStamp.time - vis.dataOverTime[vis.dataOverTime.indexOf(timeStamp) - 1].time > 3000){
+					vis.trimRespawn(currentLife)
+
+					vis.lives.push(currentLife)
+					currentLife = [timeStamp]
+				}
+			}
+
+			currentLife.push(timeStamp)
+
+            if(timeStamp.death){
+				vis.trimRespawn(currentLife)
+
+                vis.lives.push(currentLife)
+                currentLife = []
+            }
+        })
+        
+		vis.trimRespawn(currentLife)
+        vis.lives.push(currentLife)
+        vis.lives = vis.lives.filter(l => l.length > 0)
+		
+		for(const property in vis.data[vis.teams[0]][vis.players[0]]) {
+			if(vis.data[vis.selectedTeam][vis.selectedPlayer][property].death == true)
+				vis.deaths.push(new Date(`2000-01-01T${property}`))
+			if(vis.data[vis.selectedTeam][vis.selectedPlayer][property].final_blow == true)
+				vis.finalBlows.push(new Date(`2000-01-01T${property}`))
+		}
 
 		vis.renderVis();
 	}
 
 	renderVis() {
 		let vis = this;
-		
+	
+		vis.chart.selectAll('text')
+			.remove()
+
+		vis.chart.selectAll('.deathIcon')
+			.data(vis.deaths)
+			.join('text')
+				.attr('class', 'deathIcon')
+				.attr('x', d => vis.xScale(d) - 6)
+				.attr('y', ((2 * vis.height) / 3))
+				.attr('fill', '#DE6C83')
+				.attr('class', 'fa toggleIcon')
+				.attr('font-size', '12px')
+				.text('\uf54c')
+
+			vis.chart.selectAll('.finalBlowIcon')
+				.data(vis.finalBlows)
+				.join('text')
+					.attr('class', 'finalBlowIcon')
+					.attr('x', d => vis.xScale(d) - 6)
+					.attr('y', (vis.height / 3))
+					.attr('fill', '#DE6C83')
+					.attr('class', 'fa toggleIcon')
+					.attr('font-size', '12px')
+					.text('\uf05b')
+					
+		//TODO: Add translucent blocks for respawn after each death
+		// vis.chart.selectAll('.respawn')
+		// 	.data(vis.deaths)
+		// 	.join('rect')
+		// 		.attr('class', 'respawn')
+		// 		.attr('x', d => vis.xScale(d))
+		// 		.attr('y', 0)
+		// 		.attr('width',  )
+		// 		.attr('height', vis.height)
+		// 		.attr('fill', 'black')
+		// 		.attr('opacity', '0.2')
+
+		console.log(vis.lives)
+
+		vis.chart.selectAll('.lifeStart')
+			.data(vis.lives)
+			.join('rect')
+				.attr('class', 'lifeStart')
+				.attr('x', d => vis.xScale(d[0].time))
+				.attr('y', 0)
+				.attr('width', 2)
+				.attr('height', vis.height)
+				.attr('fill', '#DE6C83')
+				.attr('opacity', '1')
+	
+		vis.chart.selectAll('.lifeEnd')
+			.data(vis.lives)
+			.join('rect')
+				.attr('class', 'lifeEnd')
+				.attr('x', d => vis.xScale(d[d.length-1].time))
+				.attr('y', 0)
+				.attr('width', 1)
+				.attr('height', vis.height)
+				.attr('fill', '#DE6C83')
+				.attr('opacity', '1')
+
 		// Update axis
 		vis.xAxisG.call(vis.xAxis);
+
+		console.log(vis.xAxis)
 		
 		// Update the brush and define a default position
 		// TODO: change default position to something meaningful? Maybe first round?
-		const defaultBrushSelection = [vis.xScale(d3.extent(vis.timestamps)[0]), vis.xScale(d3.extent(vis.timestamps)[1])];
+		const defaultBrushSelection = [vis.xScale(d3.extent(vis.data.timestamps)[0]), vis.xScale(d3.extent(vis.data.timestamps)[1])];
 		vis.brushG
 			.call(vis.brush)
 			.call(vis.brush.move, defaultBrushSelection);
