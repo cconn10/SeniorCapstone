@@ -5,7 +5,7 @@ const MAP_NAME = "Blizzard World"
 let lines = [];
 
 // Initialize dispatcher that is used to orchestrate events
-const dispatcher = d3.dispatch('filterTime','lineTooltipEnter', 'lineTooltipLeave', 'lineTooltipMove', 'lineTooltipClick', 'playerSelected', 'nextPath', 'previousPath');
+const dispatcher = d3.dispatch('filterTime','lineTooltipEnter', 'lineTooltipLeave', 'lineTooltipMove', 'lineTooltipClick', 'lineTooltipDblClick', 'playerSelected', 'propSelected', 'nextPath', 'previousPath');
 
 d3.json(DATAFILE)
   .then(_data => {
@@ -15,6 +15,10 @@ d3.json(DATAFILE)
 	data.players = (Object.getOwnPropertyNames(data[data.teams[0]]).concat(Object.getOwnPropertyNames(data[data.teams[1]])));
 	data.timestampStrings = Object.getOwnPropertyNames(data[data.teams[0]][data.players[0]]);
 	data.timestamps = [];
+
+	data.detailedShown = false;
+
+	data.timestampFormat = d3.timeFormat('%M:%S');
 
 	let xExtent = []
 	let zExtent = []
@@ -201,7 +205,39 @@ d3.json(DATAFILE)
 	});
 
 	dispatcher.on('lineTooltipClick', timestamp => {
+		// let tooltipText = `<div><h>${data.timestampFormat(timestamp)}</h><div>`;
 
+		data.detailedShown = true;
+
+		for (const line of lines) {
+			const index = line.bisectTime(line.dataOverTime, timestamp, 1);
+			const d = line.dataOverTime[index];
+
+			line.tooltip.select('#tooltip-bar-detailed')
+				.attr('transform', `translate(${line.xScale(d.time)},0)`)
+
+			line.tooltip.selectAll('.detailed').style('display', 'block');
+
+			// Store timestamp so that other events (e.g. brushing) can properly re-render bar
+			line.tooltip.detailedTimestamp = d.time;
+
+			// // Add info to detailed tooltip for each line chart
+			// tooltipText += `<div>${data.LinePropLabels[line.selectedProperty]}: ${d.val}</div>`
+		}
+
+		// lineSelect.tooltip.html(tooltipText);
+
+		updateTooltipText(timestamp);
+	});
+
+	dispatcher.on('lineTooltipDblClick', () => {
+		data.detailedShown = false;
+
+		for (const line of lines) {
+			line.tooltip.selectAll('.detailed').style('display', 'none');
+		}
+
+		updateTooltipText();
 	});
 
 	dispatcher.on('playerSelected', selection => {
@@ -226,6 +262,13 @@ d3.json(DATAFILE)
 		timeline.updateVis();
 
 		updateSVS(selectedPlayer, selectedTeam)
+		if (data.detailedShown) updateTooltipText(lineChart.tooltip.detailedTimestamp);
+	})
+
+	dispatcher.on('propSelected', (propSelection, lineIndex) => {
+		lines[lineIndex].selectedProperty = lineSelect.properties[propSelection]
+		lines[lineIndex].updateVis();
+		if (data.detailedShown) updateTooltipText(lines[lineIndex].tooltip.detailedTimestamp);
 	})
 
 	dispatcher.on('nextPath', lifeCount => {
@@ -243,6 +286,32 @@ d3.json(DATAFILE)
 			playerPaths.data.pathShown = lifeCount - 1
 		playerPaths.updateVis()
 	})
+
+function updateTooltipText(timestamp="") {
+	let tooltipText;
+	if (timestamp == "") {
+		tooltipText = `
+			<div>
+				<p><i>Click on a chart to display detailed information</i></p>
+				<p><i>Double-click to remove selection</i></p>
+			</div>
+		`;
+	}
+	
+	else {
+		tooltipText = `<div><h>${data.timestampFormat(timestamp)}</h><div>`;
+
+			for (const line of lines) {
+				const index = line.bisectTime(line.dataOverTime, timestamp, 1);
+				const d = line.dataOverTime[index];
+
+				// Add info to detailed tooltip for each line chart
+				tooltipText += `<div>${data.LinePropLabels[line.selectedProperty]}: ${d.val}</div>`
+			}
+	}
+
+	lineSelect.tooltip.html(tooltipText);
+}
 
 function updateSVS(selectedPlayer = "", selectedTeam = ""){
 	let playerData = data[data.teams[selectedTeam]][data.players[selectedPlayer]]

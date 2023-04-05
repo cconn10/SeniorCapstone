@@ -59,8 +59,9 @@ class LineSelectSingle {
         for (let i = 0; i < vis.config.lines.length; i++) {
             vis.propSelect[i] = vis.parent.append('select')
                 .style('display', 'block')    
-                .on('change', () => {
+                .on('change', (event) => {
                     // TODO: Dispatcher event to update lines[i] with new property
+                    vis.dispatcher.call('propSelected', event, vis.propSelect[i].property('value'), i)
                     vis.config.lines[i].selectedProperty = vis.properties[vis.propSelect[i].property('value')]
                     vis.config.lines[i].updateVis();
                 });
@@ -88,6 +89,16 @@ class LineSelectSingle {
             vis.config.lines[i].selectedProperty = vis.properties[vis.propSelect[i].property('value')];
             vis.config.lines[i].updateVis();
         }
+
+        // Add text to be populated with detailed tooltip info (done via dispatcher event when line charts are clicked)
+        vis.tooltip = vis.parent.append('div')
+            .attr('id', 'detailed-tooltip')
+            .html(`
+                <div>
+                    <p><i>Click on a chart to display detailed information</i></p>
+                    <p><i>Double-click to remove selection</i></p>
+                </div>
+            `);
     }
 
 }

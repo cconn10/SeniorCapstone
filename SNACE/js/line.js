@@ -97,6 +97,26 @@ class LineSimple {
             .attr('r', 3)
             .attr('display', 'none');
 
+        vis.tooltip.append('rect')
+            .attr('class', 'tootip-bar hover')
+            .attr('id', 'tootip-bar-hover')
+            .attr('width', 2)
+            .attr('height', vis.height)
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('fill', 'gray')
+            .attr('display', 'none');
+
+        vis.tooltip.append('rect')
+            .attr('class', 'tooltip-bar detailed')
+            .attr('id', 'tooltip-bar-detailed')
+            .attr('width', 2)
+            .attr('height', vis.height)
+            .attr('x', -1)
+            .attr('y', 0)
+            .attr('fill', '#C9DDFF')
+            .attr('display', 'none');
+
         vis.tooltip.append('text')
             .attr('class', 'tooltip-text hover')
             .attr('id', 'tooltip-text-hover')
@@ -177,7 +197,37 @@ class LineSimple {
                 const d = b && (time - a.time > b.time - time) ? b : a;
 
                 vis.dispatcher.call('lineTooltipMove', event, d.time);
+            })
+            .on('click', function(event) {
+                // Get date that corresponds to current mouse x-coordinate
+                const xPos = d3.pointer(event, this)[0]; // First array element is x, second is y
+                const time = vis.xScale.invert(xPos);
+        
+                // Find nearest data point to mouse pointer:
+                
+                // Use previously defined bisector to get the index of that player's dataOverTime array nearest to the mouse
+                const index = vis.bisectTime(vis.dataOverTime, time, 1);
+
+                // Check the values left and right of the mouse pointer to see which is actually closest
+                const a = vis.dataOverTime[index - 1];
+                const b = vis.dataOverTime[index];
+                const d = b && (time - a.time > b.time - time) ? b : a;
+
+                vis.dispatcher.call('lineTooltipClick', event, d.time);
+            })
+            .on('dblclick', function(event) {
+                vis.dispatcher.call('lineTooltipDblClick', event);
             });
+
+        // Move detailed tooltip bar to appropriate position
+        if (!vis.tooltip.detailedTimestamp || vis.xScale(vis.tooltip.detailedTimestamp) < 0 || vis.xScale(vis.tooltip.detailedTimestamp) > vis.width) {
+            console.log('asd;fjhasdfghasfg')
+            vis.tooltip.select('#tooltip-bar-detailed').style('display', 'none')
+        } else {
+            vis.tooltip.select('#tooltip-bar-detailed')
+                .attr('transform', `translate(${vis.xScale(vis.tooltip.detailedTimestamp)},0)`)
+                .style('display', 'block')
+        }
 
         // Update the axes
         vis.xAxisG.call(vis.xAxis);
