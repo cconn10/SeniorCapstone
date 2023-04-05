@@ -24,7 +24,7 @@
     color: #777;
     padding: 5px 12px;
     margin: 5px 0 20px 0;
-
+ 
     grid-column: start / end;
     grid-row: line2 / line3;
 }

@@ -110,7 +110,7 @@ d3.json(DATAFILE)
 
 	timeline = new Timeline({
 		'parentElement': '#timeline',
-		'containerHeight': 100,
+		'containerHeight': 150,
 		'containerWidth': 1000
 	}, dispatcher, data);
 	timeline.updateVis();
@@ -140,11 +140,32 @@ d3.json(DATAFILE)
 		for (const line of lines) {
 			line.tooltip.selectAll('.hover').style('display', 'block');
 		}
+		for (let player of data.players){
+			playerPaths.chart.select('#' + player.toString())
+				.style('display', 'block')
+			playerPaths.chart.select('#' + player.toString() + '-label')
+				.style('display', 'block')
+			playerPaths.chart.select('#displayed-life')
+				.style('display', 'none')
+			playerPaths.chart.select('#displayed-life-start')
+				.style('display', 'none')
+		}
 	});
 
 	dispatcher.on('lineTooltipLeave', () => {
 		for (const line of lines) {
 			line.tooltip.selectAll('.hover').style('display', 'none');
+		}
+		
+		for (let player of data.players){
+			playerPaths.chart.select('#' + player.toString())
+				.style('display', 'none')
+			playerPaths.chart.select('#' + player.toString() + '-label')
+				.style('display', 'none')
+			playerPaths.chart.select('#displayed-life')
+				.style('display', 'block')
+			playerPaths.chart.select('#displayed-life-start')
+				.style('display', 'block')
 		}
 	});
 
@@ -168,6 +189,15 @@ d3.json(DATAFILE)
 				.data([lineToolData])
 				.attr('d', line.line);
 		}
+
+		let parseTime = d3.timeFormat("%H:%M:%S")
+		for (let player of data.players){
+			let d = data[data.teams[Math.floor(data.players.indexOf(player)/5)]][player][parseTime(timestamp)]
+			playerPaths.chart.select('#' + player.toString())
+				.attr('transform', `translate(${playerPaths.xScale(d.pos_x)},${(playerPaths.zScale(d.pos_z))})`)
+			playerPaths.chart.select('#' + player.toString() + "-label")
+				.attr('transform', `translate(${playerPaths.xScale(d.pos_x)},${(playerPaths.zScale(d.pos_z) - 5)})`)
+		}
 	});
 
 	dispatcher.on('lineTooltipClick', timestamp => {
@@ -190,7 +220,11 @@ d3.json(DATAFILE)
 		playerPaths.selectedPlayer = data.players[selectedPlayer];
 		data.pathShown = 0
 		playerPaths.updateVis();
-		
+
+		timeline.selectedTeam = data.teams[selectedTeam];
+		timeline.selectedPlayer = data.players[selectedPlayer];
+		timeline.updateVis();
+
 		updateSVS(selectedPlayer, selectedTeam)
 	})
 
@@ -253,6 +287,7 @@ function updateSVS(selectedPlayer = "", selectedTeam = ""){
 	document.getElementById("total-deaths").innerText = deaths
 	document.getElementById("deaths-per-ten").innerText = ((deaths / length) * 600).toFixed(2)
 }
+
 
 function normalizeExtent(xExtent, zExtent) {
 

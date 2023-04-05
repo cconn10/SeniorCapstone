@@ -38,7 +38,7 @@ a:hover {
     width: 95vw;
     height: 91vh;
     display: grid;
-    grid-template-rows: [start] 10% [line2] 10% [line3] 20% [line4] 10% [line5] 50% [end];
+    grid-template-rows: [start] 10% [line2] 8% [line3] 18% [line4] 14% [line5] 50% [end];
     grid-template-columns: [start] 10% [line2] 40% [line3] 15% [line4] 35% [end];
 }
 .title {
@@ -101,7 +101,7 @@ a:hover {
     grid-column: start / end;
     width: 100%;
     display: flex;
-    justify-self: center;
+    align-self: start;
 }
 
 #timeline {
@@ -127,7 +127,7 @@ a:hover {
 }
 
 /*Tooltip*/
-#tooltip {
+#timeline-tooltip {
     position: absolute;
     display: none;
     background: #FFF;
@@ -138,4 +138,5 @@ a:hover {
     font-size: 14px;
     font-weight: 500;
     z-index: 100;
+    border-radius: 10px;
 }

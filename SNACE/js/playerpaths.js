@@ -47,8 +47,7 @@ class PlayerPaths {
             .ticks("")
         vis.yAxisRight = d3.axisLeft(vis.zScale)
             .ticks("")
-        
-        vis.colorScale = d3.scaleOrdinal().range(["#6e40aa","#963db3","#bf3caf","#e4419d","#fe4b83","#ff5e63","#ff7847","#fb9633","#e2b72f","#c6d63c","#aff05b"])
+        vis.colorScale = d3.scaleOrdinal().range(["#8c74b5","#8952a5","#852d8f","#730f71","#4d004b","#fa5c2e","#ec3023","#d31121","#af0225","#800026"])
 
         vis.xAxisTopGroup = vis.chart.append('g')
             .attr('class', 'axis x-axis')
@@ -61,6 +60,17 @@ class PlayerPaths {
         vis.yAxisRightGroup = vis.chart.append('g')
             .attr('class', 'axis y-axis')   
 			.attr('transform', `translate(${vis.width}, 0)`)
+
+        console.log(MAP_NAME)
+
+        vis.chart.append('text')
+                .attr('id', 'title')
+                .attr('x', vis.width / 2)
+                .attr('y', -15)
+                .attr('fill', 'black')
+                .attr('font-size', '24px')
+                .style('text-anchor', 'middle')
+                .text(MAP_NAME)
 
         vis.selectedTeam = vis.teams[0]
         vis.selectedPlayer = vis.players[0]
@@ -120,12 +130,12 @@ class PlayerPaths {
         
 		vis.trimRespawn(currentLife)
         vis.lives.push(currentLife)
-        vis.lives = vis.lives.filter(l => l.length > 0)
+        vis.lives = vis.lives.filter(l => l.length > 1)
 
         vis.xValue = d => d.x;
         vis.yValue = d => d.z;
 
-        vis.colorScale.domain(vis.lives)
+        vis.colorScale.domain(vis.players)
 
         vis.line = d3.line()
             .x(d => vis.xScale(vis.xValue(d)))
@@ -178,25 +188,67 @@ class PlayerPaths {
         vis.chart.selectAll('path')
         .data(vis.lives.displayedLife)
         .join('path')
+            .attr('id', 'displayed-life')
             .attr('d', d => vis.line(d))
-            .attr('stroke', d => vis.colorScale(d))
+            .attr('stroke', vis.colorScale(vis.selectedPlayer))
             .attr('stroke-width', 1)
             .attr('fill', 'none')
         vis.chart.selectAll('circle')
             .data(vis.lives.displayedLife)
             .join('circle')
+                .attr('id', 'displayed-life-start')
                 .attr('cx', d => vis.xScale(vis.xValue(d[0])))
                 .attr('cy', d => vis.zScale(vis.yValue(d[0])))
                 .attr('r', 3)
                 .attr('z-index', 1)
-                .attr('fill', d => vis.colorScale(d))
+                .attr('fill', vis.colorScale(vis.selectedPlayer))
                 .attr('stroke', "#3f3f3f")
                 .attr('stroke-width', 1)
 
-        vis.xAxisTopGroup.call(vis.xAxisTop)
-        vis.xAxisBottomGroup.call(vis.xAxisBottom)
-        vis.yAxisLeftGroup.call(vis.yAxisLeft)
-        vis.yAxisRightGroup.call(vis.yAxisRight)
+        for (const player of vis.players){
+            vis.chart.append('circle')
+                .attr('class', 'playerPosition')
+                .attr('id', player)
+                .attr('r', 3)
+                .attr('fill', vis.colorScale(player))
+                .attr('stroke', "#3f3f3f")
+                .attr('display', 'none')
+
+            vis.chart.append('text')
+                .attr('class', 'playerPosition')
+                .attr('id', player + '-label')
+                .attr('fill', 'black')
+                .attr('font-size', "12px")
+                .attr('display', 'none')
+                .text(player)
+        }
+
+		let parseTime = d3.timeFormat("%H:%M:%S")
+
+        vis.timeDifference = (start, end) => {
+            let min = Math.abs(end.getMinutes() - start.getMinutes())
+            let sec = Math.abs(end.getSeconds() - start.getSeconds())
+            return [min, sec]
+        }
+
+        console.log(vis.lives)
+
+        vis.chart.selectAll('#time-span-label')
+            .data(vis.lives.displayedLife)
+            .join('text')
+                .attr('id', 'time-span-label')
+                .attr('x', vis.width / 2)
+                .attr('y', 0)
+                .attr('font-size', '14px')
+                .attr('fill', 'black')
+                .style('text-anchor', 'middle')
+                .text(d => 'Life Duration: ' + parseTime(d[0].time) + " - " + parseTime(d[d.length-1].time) + " (" + vis.timeDifference(d[0].time, d[d.length-1].time)[0] + " min, " + vis.timeDifference(d[0].time, d[d.length-1].time)[1] + " sec)")
+
+
+        // vis.xAxisTopGroup.call(vis.xAxisTop)
+        // vis.xAxisBottomGroup.call(vis.xAxisBottom)
+        // vis.yAxisLeftGroup.call(vis.yAxisLeft)
+        // vis.yAxisRightGroup.call(vis.yAxisRight)
     }
 
 }
