@@ -54,6 +54,20 @@ class Timeline {
 			.attr('class', 'axis x-axis')
 			.attr('transform', `translate(0,${vis.height})`)
 
+		// Empty tooltip group
+		vis.tooltip = vis.chart.append('g')
+            .attr('class', 'tooltip')
+
+		vis.tooltip.append('rect')
+            .attr('class', 'tooltip-bar detailed')
+            .attr('id', 'tooltip-bar-detailed')
+            .attr('width', 2)
+            .attr('height', vis.height)
+            .attr('x', -1)
+            .attr('y', 0)
+            .attr('fill', '#C9DDFF')
+            .attr('display', 'none');
+
 		// Initialize brush component
 		vis.brush = d3.brushX()
 			.extent([[0, 0], [vis.width, vis.height - 1]])

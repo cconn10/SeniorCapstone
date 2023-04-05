@@ -83,28 +83,20 @@ class LineSimple {
             .attr('fill', 'none')
             .attr('pointer-events', 'all');
 
-        vis.tooltip.append('path')
-            .attr('class', 'tooltip-path hover')
-            .attr('id', 'tooltip-path-hover')
-            .attr('stroke',  "gray")
-            .attr('stroke-width', 2)
-            .attr('fill', 'none')
+        vis.tooltip.append('rect')
+            .attr('class', 'tooltip-bar hover')
+            .attr('id', 'tooltip-bar-hover')
+            .attr('width', 2)
+            .attr('height', vis.height)
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('fill', 'gray')
             .attr('display', 'none');
 
         vis.tooltip.append('circle')
             .attr('class', 'tooltip-circle hover')
             .attr('id', 'tooltip-circle-hover')
             .attr('r', 3)
-            .attr('display', 'none');
-
-        vis.tooltip.append('rect')
-            .attr('class', 'tootip-bar hover')
-            .attr('id', 'tootip-bar-hover')
-            .attr('width', 2)
-            .attr('height', vis.height)
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('fill', 'gray')
             .attr('display', 'none');
 
         vis.tooltip.append('rect')
@@ -219,9 +211,8 @@ class LineSimple {
                 vis.dispatcher.call('lineTooltipDblClick', event);
             });
 
-        // Move detailed tooltip bar to appropriate position
-        if (!vis.tooltip.detailedTimestamp || vis.xScale(vis.tooltip.detailedTimestamp) < 0 || vis.xScale(vis.tooltip.detailedTimestamp) > vis.width) {
-            console.log('asd;fjhasdfghasfg')
+        // Move detailed tooltip bar to appropriate position - remove it if it's out of the brushed bounds or if it's not supposed to be shown
+        if (!vis.data.detailedShown || vis.xScale(vis.tooltip.detailedTimestamp) < 0 || vis.xScale(vis.tooltip.detailedTimestamp) > vis.width) {
             vis.tooltip.select('#tooltip-bar-detailed').style('display', 'none')
         } else {
             vis.tooltip.select('#tooltip-bar-detailed')

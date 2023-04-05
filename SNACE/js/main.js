@@ -180,18 +180,13 @@ d3.json(DATAFILE)
 
 			line.tooltip.select('#tooltip-circle-hover')
 				.attr('transform', `translate(${line.xScale(d.time)},${line.yScale(d.val)})`);
+
+			line.tooltip.select('#tooltip-bar-hover')
+				.attr('transform', `translate(${line.xScale(d.time)},0)`);
                 
 			line.tooltip.select('#tooltip-text-hover')
-				.attr('transform', `translate(${line.xScale(d.time)},${(line.yScale(d.val) - 15)})`)
+				.attr('transform', `translate(${line.xScale(d.time) + 15},${(line.yScale(d.val) - 15)})`)
 				.text(Math.round(d.val));
-
-			// Data points to create a vertical line at d.time
-			let lineToolData = [{"time": d.time, "val": d3.min(line.dataOverTime, d => line.yValue(d))}, 
-								{"time": d.time, "val": d3.max(line.dataOverTime, d => line.yValue(d))}]
-
-			line.tooltip.select('#tooltip-path-hover')
-				.data([lineToolData])
-				.attr('d', line.line);
 		}
 
 		let parseTime = d3.timeFormat("%H:%M:%S")
@@ -205,27 +200,21 @@ d3.json(DATAFILE)
 	});
 
 	dispatcher.on('lineTooltipClick', timestamp => {
-		// let tooltipText = `<div><h>${data.timestampFormat(timestamp)}</h><div>`;
-
 		data.detailedShown = true;
 
 		for (const line of lines) {
-			const index = line.bisectTime(line.dataOverTime, timestamp, 1);
-			const d = line.dataOverTime[index];
-
 			line.tooltip.select('#tooltip-bar-detailed')
-				.attr('transform', `translate(${line.xScale(d.time)},0)`)
+				.attr('transform', `translate(${line.xScale(timestamp)},0)`)
 
 			line.tooltip.selectAll('.detailed').style('display', 'block');
 
 			// Store timestamp so that other events (e.g. brushing) can properly re-render bar
-			line.tooltip.detailedTimestamp = d.time;
-
-			// // Add info to detailed tooltip for each line chart
-			// tooltipText += `<div>${data.LinePropLabels[line.selectedProperty]}: ${d.val}</div>`
+			line.tooltip.detailedTimestamp = timestamp;
 		}
 
-		// lineSelect.tooltip.html(tooltipText);
+		timeline.tooltip.select('#tooltip-bar-detailed')
+			.attr('transform', `translate(${timeline.xScale(timestamp)},0)`)
+			.style('display', 'block');
 
 		updateTooltipText(timestamp);
 	});
@@ -236,6 +225,8 @@ d3.json(DATAFILE)
 		for (const line of lines) {
 			line.tooltip.selectAll('.detailed').style('display', 'none');
 		}
+
+		timeline.tooltip.selectAll('.detailed').style('display', 'none');
 
 		updateTooltipText();
 	});
@@ -288,17 +279,9 @@ d3.json(DATAFILE)
 	})
 
 function updateTooltipText(timestamp="") {
-	let tooltipText;
-	if (timestamp == "") {
-		tooltipText = `
-			<div>
-				<p><i>Click on a chart to display detailed information</i></p>
-				<p><i>Double-click to remove selection</i></p>
-			</div>
-		`;
-	}
+	let tooltipText = "";
 	
-	else {
+	if (timestamp != "") {
 		tooltipText = `<div><h>${data.timestampFormat(timestamp)}</h><div>`;
 
 			for (const line of lines) {
