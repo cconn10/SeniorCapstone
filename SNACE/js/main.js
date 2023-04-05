@@ -81,27 +81,35 @@ d3.json(DATAFILE)
 
 	playerPaths = new PlayerPaths({
 		'parentElement': '#player-path',
-		'containerHeight': 700,
-		'containerWidth':700
+		'containerHeight': 800,
+		'containerWidth': 800
 	}, dispatcher, data)
 	playerPaths.updateVis()
 	
     lineChart = new LineSimple({
 		'parentElement': '#chart-one',
 		'containerHeight': 160,
-		'containerWidth': 1000
+		'containerWidth': 800
 		}, dispatcher, data);
 	lineChart.updateVis();
 	
     lineChart2 = new LineSimple({
 		'parentElement': '#chart-two',
 		'containerHeight': 160,
-		'containerWidth': 1000
+		'containerWidth': 800
 	}, dispatcher, data);
 	lineChart2.updateVis();
 
+    lineChart3 = new LineSimple({
+		'parentElement': '#chart-three',
+		'containerHeight': 160,
+		'containerWidth': 800
+	}, dispatcher, data);
+	lineChart3.updateVis();
+
 	lines.push(lineChart);
 	lines.push(lineChart2);
+	lines.push(lineChart3);
 
 	lineSelect = new LineSelectSingle({
 		'parentElement': '#chart-selections',
@@ -111,7 +119,7 @@ d3.json(DATAFILE)
 	timeline = new Timeline({
 		'parentElement': '#timeline',
 		'containerHeight': 150,
-		'containerWidth': 1000
+		'containerWidth': 800
 	}, dispatcher, data);
 	timeline.updateVis();
 
@@ -134,6 +142,7 @@ d3.json(DATAFILE)
 				}}
 			lineChart.updateVis();
 			lineChart2.updateVis();
+			lineChart3.updateVis();
 	});
 
 	dispatcher.on('lineTooltipEnter', () => {
@@ -215,6 +224,10 @@ d3.json(DATAFILE)
 		lineChart2.selectedTeam = data.teams[selectedTeam];
 		lineChart2.selectedPlayer = data.players[selectedPlayer];
 		lineChart2.updateVis();
+
+		lineChart3.selectedTeam = data.teams[selectedTeam];
+		lineChart3.selectedPlayer = data.players[selectedPlayer];
+		lineChart3.updateVis();
 
 		playerPaths.selectedTeam = data.teams[selectedTeam];
 		playerPaths.selectedPlayer = data.players[selectedPlayer];

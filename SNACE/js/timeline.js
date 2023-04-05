@@ -47,7 +47,7 @@ class Timeline {
 
         // Initialize axes - NOTE: no yAxis drawn
         vis.xAxis = d3.axisBottom(vis.xScale)
-			.tickFormat(d3.timeFormat("%H:%M:%S"));
+			.tickFormat(d3.timeFormat("%M:%S"));
 
 		// Append x-axis group and move it to the bottom of the chart
 		vis.xAxisG = vis.chart.append('g')
