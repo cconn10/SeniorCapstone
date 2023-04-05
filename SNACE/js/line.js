@@ -5,7 +5,7 @@ class LineSimple {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 25, bottom: 5, right: 50, left: 50 }
+            margin: { top: 15, bottom: 25, right: 50, left: 50 }
         }
         
         this.dispatcher = _dispatcher;
@@ -37,7 +37,7 @@ class LineSimple {
 
         vis.colorScale = d3.scaleOrdinal()
             .domain(vis.players)
-            .range(["#8c74b5","#8952a5","#852d8f","#730f71","#4d004b","#fa5c2e","#ec3023","#d31121","#af0225","#800026"]);
+            .range(["#CCEDFF","#99DBFF","#66C9FF","#33B8FF","#00A6FF","#FFE9CC","#FFD399","#FFBD66","#FFA733","#FF9000"]);
 
         // Define size of SVG drawing area
         vis.svg = d3.select(vis.config.parentElement)
@@ -58,7 +58,6 @@ class LineSimple {
 
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
-            .ticks("")
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(7);
 
