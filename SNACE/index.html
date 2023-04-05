@@ -17,14 +17,15 @@
                 <span class="mdc-top-app-bar__title">SNACE</span>
             </section>
             <section class="mdc-top-app-bar__section app-bar-end" role="toolbar">
-                <button class="app-bar-btn" aria-label="Player Comparison">Player Comparison</button>
-                <button class="app-bar-btn" aria-label="Team View">Team View</button>
+                <!-- <button class="app-bar-btn" aria-label="Player Comparison">Player Comparison</button>
+                <button class="app-bar-btn" aria-label="Team View">Team View</button> -->
                 <button class="app-bar-btn" aria-label="Single Player View">Single Player View</button>
             </section>
         </div>
       </header>
     <div class="container mdc-top-app-bar--fixed-adjust">
-        <div class="card" id="chart-selections">
+        <div id="chart-selections"></div>
+        <div class="card" id="detailed-tooltip">
             <div id ="tooltip-info">
                 <p><i>Click on a chart to display detailed information</i></p>
                 <p><i>Double-click to remove selection</i></p>
@@ -32,6 +33,7 @@
         </div>
         <svg class="long-chart" id="chart-one"></svg>
         <svg class="long-chart" id="chart-two"></svg>
+        <svg class="long-chart" id="chart-three"></svg>
         <svg class="long-chart" id="timeline"></svg>
         <div id="player-path-container">
             <svg class="chart" id="player-path"></svg>

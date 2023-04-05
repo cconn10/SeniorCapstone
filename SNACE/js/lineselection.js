@@ -82,6 +82,10 @@ class LineSelectSingle {
                 vis.propSelect[i].select('option[value="11"]').attr('selected', true);
                 // vis.propSelect[i].attr('value', 11);
             }
+            if (i == 2) {
+                vis.propSelect[i].select('option[value="29"]').attr('selected', true);
+                // vis.propSelect[i].attr('value', 11);
+            }
 
             vis.config.lines[i].selectedProperty = vis.properties[vis.propSelect[i].property('value')];
             vis.config.lines[i].updateVis();

@@ -1,6 +1,8 @@
 body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     margin: 0;
+    background-color: #545454;
+    color: #f8f8f8
 }
 a {
     fill: #006eff;
@@ -38,8 +40,8 @@ a:hover {
     width: 95vw;
     height: 91vh;
     display: grid;
-    grid-template-rows: [start] 10% [line2] 8% [line3] 18% [line4] 14% [line5] 50% [end];
-    grid-template-columns: [start] 10% [line2] 40% [line3] 15% [line4] 35% [end];
+    grid-template-rows: [start] 32% [line2] 18% [line3] 18% [line4] 18%  [line5] 14% [end];
+    grid-template-columns: [start] 10% [line2] 40% [line3] 3% [line4] 47% [end];
 }
 .title {
     text-align: center;
@@ -51,14 +53,43 @@ a:hover {
     justify-self: start;
 }
 
-#chart-selections {
-    grid-row: start / line5;
+#detailed-tooltip {
+    grid-row: line3 / end;
     grid-column: start / line2;
     margin: 20px 0 20px 0;
 }
 
+#chart-selections {
+    grid-row: line2 / line3;
+    grid-column: start / line2;
+
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+}
+
+select {
+    color: #f8f8f8;
+    background-color: transparent;
+
+    margin: 5px;
+    padding: 3px;
+
+    width: 80%;
+    border-radius: 5px;
+    border-color: #f8f8f8;
+}
+
+select option, select optgroup {
+    border: 1px solid #f8f8f8;
+    color: #f8f8f8;
+    background-color: #545454;
+}
+
 #chart-one {
-    grid-row: start / line3;
+    grid-row: line2 / line3;
     grid-column: line2 / end;
 }
 
@@ -66,16 +97,21 @@ a:hover {
     grid-row: line3 / line4;
     grid-column: line2 / end;
 }
+
+#chart-three {
+    grid-row: line4 / line5;
+    grid-column: line2 / end;
+}
+
 #player-path-container {
     grid-row: start / end;
     grid-column: line4 / end;
-
     display: grid;
     grid-template-rows: [start] 5% [line2] 80% [line3] 15% [end];
     grid-template-columns: [start] 100% [end];
 }
 #player-path {
-    grid-row: start / line3;
+    grid-row: start / end;
     grid-column: start / end;
     position: relative;
     display: flex;
@@ -84,33 +120,26 @@ a:hover {
 }
 
 #blizzard-world-map {
-    grid-row: start / line3;
+    grid-row: start / end;
     grid-column: start / end;
-    width: 550px;
-    height: 550px;
+    width: 600px;
+    height: 600px;
     opacity: 0.3;
     z-index: -100;
-    margin: 65px 30px 30px 45px;
+    margin: 38px 20px 0 0;
     display: flex;
     align-self: center;
     justify-self: center;
 }
 
-#map-slider {
-    grid-row: line3 / end;
-    grid-column: start / end;
-    width: 100%;
-    display: flex;
-    align-self: start;
-}
-
 #timeline {
-    grid-row: line4 / line5;
+    grid-row: line5 / end;
     grid-column: line2 / end;
 }
 
 #single-value-statistics {
-    grid-row: line5 / end;
+    margin-top: 20px;
+    grid-row: start / line2;
     grid-column: start / line3;
 }
 
@@ -124,19 +153,4 @@ a:hover {
 
 .toggleIcon {
     cursor: pointer;
-}
-
-/*Tooltip*/
-#timeline-tooltip {
-    position: absolute;
-    display: none;
-    background: #FFF;
-    box-shadow: 3px 3px 3px 0 rgb(92 92 92 / 0.5);
-    min-width: 100px;
-    color:#333;
-    padding: 0 10px;
-    font-size: 14px;
-    font-weight: 500;
-    z-index: 100;
-    border-radius: 10px;
 }

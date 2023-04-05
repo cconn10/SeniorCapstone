@@ -5,7 +5,7 @@ class PlayerPaths {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 50, right: 30, bottom: 30, left: 50 }
+            margin: { top: 50, right: 30, bottom: 0, left: 50 }
         }
 
         this.dispatcher = _dispatcher
@@ -47,7 +47,7 @@ class PlayerPaths {
             .ticks("")
         vis.yAxisRight = d3.axisLeft(vis.zScale)
             .ticks("")
-        vis.colorScale = d3.scaleOrdinal().range(["#8c74b5","#8952a5","#852d8f","#730f71","#4d004b","#fa5c2e","#ec3023","#d31121","#af0225","#800026"])
+        vis.colorScale = d3.scaleOrdinal().range(["#CCEDFF","#99DBFF","#66C9FF","#33B8FF","#00A6FF","#FFE9CC","#FFD399","#FFBD66","#FFA733","#FF9000"])
 
         vis.xAxisTopGroup = vis.chart.append('g')
             .attr('class', 'axis x-axis')
@@ -67,7 +67,7 @@ class PlayerPaths {
                 .attr('id', 'title')
                 .attr('x', vis.width / 2)
                 .attr('y', -15)
-                .attr('fill', 'black')
+                .attr('fill', '#f8f8f8')
                 .attr('font-size', '24px')
                 .style('text-anchor', 'middle')
                 .text(MAP_NAME)
@@ -144,9 +144,9 @@ class PlayerPaths {
         
         vis.chart.append('text')
             .data(vis.lives)
-            .attr('x', vis.width + 10)
+            .attr('x', vis.width - 70)
             .attr('y', (vis.height / 2))
-            .attr('fill', 'black')
+            .attr('fill', '#f8f8f8')
             .attr('class', 'fa toggleIcon')
             .attr('font-size', '30px')
             .text('\uf054')
@@ -156,9 +156,9 @@ class PlayerPaths {
 
         vis.chart.append('text')
             .data(vis.lives)
-            .attr('x', -30)
+            .attr('x', 0)
             .attr('y', (vis.height / 2))
-            .attr('fill', 'black')
+            .attr('fill', '#f8f8f8')
             .attr('class', 'fa toggleIcon')
             .attr('font-size', '30px')
             .text('\uf053')
@@ -167,9 +167,9 @@ class PlayerPaths {
             });
 
         vis.chart.append('text')
-            .attr('x', vis.width*0.75)
-            .attr('y', vis.height + 15)
-            .attr('fill', 'black')
+            .attr('x', vis.width*0.65)
+            .attr('y', vis.height - 60)
+            .attr('fill', '#f8f8f8')
             .attr('font-size', '12px')
             .html(`Image courtesy of <a href="https://statbanana.com/images" target="_blank">Statbanana</a>`)
         
@@ -217,7 +217,7 @@ class PlayerPaths {
             vis.chart.append('text')
                 .attr('class', 'playerPosition')
                 .attr('id', player + '-label')
-                .attr('fill', 'black')
+                .attr('fill', '#f8f8f8')
                 .attr('font-size', "12px")
                 .attr('display', 'none')
                 .text(player)
@@ -238,9 +238,9 @@ class PlayerPaths {
             .join('text')
                 .attr('id', 'time-span-label')
                 .attr('x', vis.width / 2)
-                .attr('y', 0)
+                .attr('y',  40)
                 .attr('font-size', '14px')
-                .attr('fill', 'black')
+                .attr('fill', '#f8f8f8')
                 .style('text-anchor', 'middle')
                 .text(d => 'Life Duration: ' + parseTime(d[0].time) + " - " + parseTime(d[d.length-1].time) + " (" + vis.timeDifference(d[0].time, d[d.length-1].time)[0] + " min, " + vis.timeDifference(d[0].time, d[d.length-1].time)[1] + " sec)")
 
