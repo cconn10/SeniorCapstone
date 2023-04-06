@@ -295,14 +295,14 @@ function updateTooltipText(timestamp="") {
 	let tooltipText = "";
 	
 	if (timestamp != "") {
-		tooltipText = `<div><h>${data.timestampFormat(timestamp)}</h><div>`;
+		tooltipText = `<div><p class="detailed-tooltip-timestamp">${data.timestampFormat(timestamp)}</p><div>`;
 
 			for (const line of lines) {
 				const index = line.bisectTime(line.dataOverTime, timestamp, 1);
 				const d = line.dataOverTime[index];
 
 				// Add info to detailed tooltip for each line chart
-				tooltipText += `<div>${data.LinePropLabels[line.selectedProperty]}: ${d.val}</div>`
+				tooltipText += `<div><p class="detailed-tooltip-label">${data.LinePropLabels[line.selectedProperty]}</p> <p class="detailed-tooltip-value">${d.val}</p></div>`
 			}
 	}
 
