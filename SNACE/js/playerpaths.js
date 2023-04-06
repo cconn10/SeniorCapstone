@@ -61,8 +61,6 @@ class PlayerPaths {
             .attr('class', 'axis y-axis')   
 			.attr('transform', `translate(${vis.width}, 0)`)
 
-        console.log(MAP_NAME)
-
         vis.chart.append('text')
                 .attr('id', 'title')
                 .attr('x', vis.width / 2)
@@ -230,8 +228,6 @@ class PlayerPaths {
             let sec = Math.abs(end.getSeconds() - start.getSeconds())
             return [min, sec]
         }
-
-        console.log(vis.lives)
 
         vis.chart.selectAll('#time-span-label')
             .data(vis.lives.displayedLife)
