@@ -65,7 +65,7 @@ class Timeline {
             .attr('height', vis.height)
             .attr('x', -1)
             .attr('y', 0)
-            .attr('fill', '#C9DDFF')
+            .attr('fill', '#ECB0E1')
             .attr('display', 'none');
 
 		// Initialize brush component

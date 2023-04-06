@@ -92,8 +92,7 @@ class LineSelectSingle {
         }
 
         // Add text to be populated with detailed tooltip info (done via dispatcher event when line charts are clicked)
-        vis.tooltip = vis.parent.append('div')
-            .attr('id', 'detailed-tooltip')
+        vis.tooltip = d3.select('#detailed-tooltip').append('div')
     }
 
 }
