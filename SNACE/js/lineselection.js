@@ -33,7 +33,7 @@ class LineSelectSingle {
         // vis.selectedPlayer = vis.players[0];
         // vis.selectedProperty = vis.properties[0];
 
-        vis.playerSelect = vis.parent.append('select')
+        vis.playerSelect = vis.parent.insert('select', 'div')
             .style('display', 'block')    
             .on('change', (event, d) => {
                 // TODO: Dispatcher event to update all lines in lines[]
@@ -57,12 +57,10 @@ class LineSelectSingle {
         // Add property select element for EACH line
         vis.propSelect = [];
         for (let i = 0; i < vis.config.lines.length; i++) {
-            vis.propSelect[i] = vis.parent.append('select')
+            vis.propSelect[i] = vis.parent.insert('select', 'div')
                 .style('display', 'block')    
-                .on('change', () => {
-                    // TODO: Dispatcher event to update lines[i] with new property
-                    vis.config.lines[i].selectedProperty = vis.properties[vis.propSelect[i].property('value')]
-                    vis.config.lines[i].updateVis();
+                .on('change', (event) => {
+                    vis.dispatcher.call('propSelected', event, vis.propSelect[i].property('value'), i)
                 });
             
             // Populate each property select element with property names
@@ -92,6 +90,9 @@ class LineSelectSingle {
             vis.config.lines[i].selectedProperty = vis.properties[vis.propSelect[i].property('value')];
             vis.config.lines[i].updateVis();
         }
+
+        // Add text to be populated with detailed tooltip info (done via dispatcher event when line charts are clicked)
+        vis.tooltip = d3.select('#detailed-tooltip').append('div')
     }
 
 }

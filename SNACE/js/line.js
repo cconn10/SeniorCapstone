@@ -82,18 +82,30 @@ class LineSimple {
             .attr('fill', 'none')
             .attr('pointer-events', 'all');
 
-        vis.tooltip.append('path')
-            .attr('class', 'tooltip-path hover')
-            .attr('id', 'tooltip-path-hover')
-            .attr('stroke',  "gray")
-            .attr('stroke-width', 2)
-            .attr('fill', 'none')
+        vis.tooltip.append('rect')
+            .attr('class', 'tooltip-bar hover')
+            .attr('id', 'tooltip-bar-hover')
+            .attr('width', 2)
+            .attr('height', vis.height)
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('fill', 'gray')
             .attr('display', 'none');
 
         vis.tooltip.append('circle')
             .attr('class', 'tooltip-circle hover')
             .attr('id', 'tooltip-circle-hover')
             .attr('r', 3)
+            .attr('display', 'none');
+
+        vis.tooltip.append('rect')
+            .attr('class', 'tooltip-bar detailed')
+            .attr('id', 'tooltip-bar-detailed')
+            .attr('width', 2)
+            .attr('height', vis.height)
+            .attr('x', -1)
+            .attr('y', 0)
+            .attr('fill', '#ECB0E1')
             .attr('display', 'none');
 
         vis.tooltip.append('text')
@@ -176,7 +188,36 @@ class LineSimple {
                 const d = b && (time - a.time > b.time - time) ? b : a;
 
                 vis.dispatcher.call('lineTooltipMove', event, d.time);
+            })
+            .on('click', function(event) {
+                // Get date that corresponds to current mouse x-coordinate
+                const xPos = d3.pointer(event, this)[0]; // First array element is x, second is y
+                const time = vis.xScale.invert(xPos);
+        
+                // Find nearest data point to mouse pointer:
+                
+                // Use previously defined bisector to get the index of that player's dataOverTime array nearest to the mouse
+                const index = vis.bisectTime(vis.dataOverTime, time, 1);
+
+                // Check the values left and right of the mouse pointer to see which is actually closest
+                const a = vis.dataOverTime[index - 1];
+                const b = vis.dataOverTime[index];
+                const d = b && (time - a.time > b.time - time) ? b : a;
+
+                vis.dispatcher.call('lineTooltipClick', event, d.time);
+            })
+            .on('dblclick', function(event) {
+                vis.dispatcher.call('lineTooltipDblClick', event);
             });
+
+        // Move detailed tooltip bar to appropriate position - remove it if it's out of the brushed bounds or if it's not supposed to be shown
+        if (!vis.data.detailedShown || vis.xScale(vis.tooltip.detailedTimestamp) < 0 || vis.xScale(vis.tooltip.detailedTimestamp) > vis.width) {
+            vis.tooltip.select('#tooltip-bar-detailed').style('display', 'none')
+        } else {
+            vis.tooltip.select('#tooltip-bar-detailed')
+                .attr('transform', `translate(${vis.xScale(vis.tooltip.detailedTimestamp)},0)`)
+                .style('display', 'block')
+        }
 
         // Update the axes
         vis.xAxisG.call(vis.xAxis);

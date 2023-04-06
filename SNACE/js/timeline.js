@@ -54,6 +54,20 @@ class Timeline {
 			.attr('class', 'axis x-axis')
 			.attr('transform', `translate(0,${vis.height})`)
 
+		// Empty tooltip group
+		vis.tooltip = vis.chart.append('g')
+            .attr('class', 'tooltip')
+
+		vis.tooltip.append('rect')
+            .attr('class', 'tooltip-bar detailed')
+            .attr('id', 'tooltip-bar-detailed')
+            .attr('width', 2)
+            .attr('height', vis.height)
+            .attr('x', -1)
+            .attr('y', 0)
+            .attr('fill', '#ECB0E1')
+            .attr('display', 'none');
+
 		// Initialize brush component
 		vis.brush = d3.brushX()
 			.extent([[0, 0], [vis.width, vis.height - 1]])
@@ -147,30 +161,31 @@ class Timeline {
 	renderVis() {
 		let vis = this;
 	
-		vis.chart.selectAll('text')
+		vis.chart.selectAll('.deathIcon')
+			.remove()
+
+		vis.chart.selectAll('.finalBlowIcon')
 			.remove()
 
 		vis.chart.selectAll('.deathIcon')
 			.data(vis.deaths)
 			.join('text')
-				.attr('class', 'deathIcon')
+				.attr('class', 'fa toggleIcon deathIcon')
 				.attr('x', d => vis.xScale(d) - 6)
 				.attr('y', ((2 * vis.height) / 3))
 				.attr('fill', '#DE6C83')
-				.attr('class', 'fa toggleIcon')
 				.attr('font-size', '12px')
 				.text('\uf54c')
 
-			vis.chart.selectAll('.finalBlowIcon')
-				.data(vis.finalBlows)
-				.join('text')
-					.attr('class', 'finalBlowIcon')
-					.attr('x', d => vis.xScale(d) - 6)
-					.attr('y', (vis.height / 3))
-					.attr('fill', '#DE6C83')
-					.attr('class', 'fa toggleIcon')
-					.attr('font-size', '12px')
-					.text('\uf05b')
+		vis.chart.selectAll('.finalBlowIcon')
+			.data(vis.finalBlows)
+			.join('text')
+				.attr('class', 'fa toggleIcon finalBlowIcon')
+				.attr('x', d => vis.xScale(d) - 6)
+				.attr('y', (vis.height / 3))
+				.attr('fill', '#DE6C83')
+				.attr('font-size', '12px')
+				.text('\uf05b')
 					
 		//TODO: Add translucent blocks for respawn after each death
 		// vis.chart.selectAll('.respawn')

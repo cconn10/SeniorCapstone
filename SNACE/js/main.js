@@ -5,7 +5,7 @@ const MAP_NAME = "Blizzard World"
 let lines = [];
 
 // Initialize dispatcher that is used to orchestrate events
-const dispatcher = d3.dispatch('filterTime','lineTooltipEnter', 'lineTooltipLeave', 'lineTooltipMove', 'lineTooltipClick', 'playerSelected', 'nextPath', 'previousPath');
+const dispatcher = d3.dispatch('filterTime','lineTooltipEnter', 'lineTooltipLeave', 'lineTooltipMove', 'lineTooltipClick', 'lineTooltipDblClick', 'playerSelected', 'propSelected', 'nextPath', 'previousPath');
 
 d3.json(DATAFILE)
   .then(_data => {
@@ -15,6 +15,10 @@ d3.json(DATAFILE)
 	data.players = (Object.getOwnPropertyNames(data[data.teams[0]]).concat(Object.getOwnPropertyNames(data[data.teams[1]])));
 	data.timestampStrings = Object.getOwnPropertyNames(data[data.teams[0]][data.players[0]]);
 	data.timestamps = [];
+
+	data.detailedShown = false;
+
+	data.timestampFormat = d3.timeFormat('%M:%S');
 
 	let xExtent = []
 	let zExtent = []
@@ -185,18 +189,13 @@ d3.json(DATAFILE)
 
 			line.tooltip.select('#tooltip-circle-hover')
 				.attr('transform', `translate(${line.xScale(d.time)},${line.yScale(d.val)})`);
+
+			line.tooltip.select('#tooltip-bar-hover')
+				.attr('transform', `translate(${line.xScale(d.time)},0)`);
                 
 			line.tooltip.select('#tooltip-text-hover')
-				.attr('transform', `translate(${line.xScale(d.time)},${(line.yScale(d.val) - 15)})`)
+				.attr('transform', `translate(${line.xScale(d.time) + 15},${(line.yScale(d.val) - 15)})`)
 				.text(Math.round(d.val));
-
-			// Data points to create a vertical line at d.time
-			let lineToolData = [{"time": d.time, "val": d3.min(line.dataOverTime, d => line.yValue(d))}, 
-								{"time": d.time, "val": d3.max(line.dataOverTime, d => line.yValue(d))}]
-
-			line.tooltip.select('#tooltip-path-hover')
-				.data([lineToolData])
-				.attr('d', line.line);
 		}
 
 		let parseTime = d3.timeFormat("%H:%M:%S")
@@ -210,7 +209,35 @@ d3.json(DATAFILE)
 	});
 
 	dispatcher.on('lineTooltipClick', timestamp => {
+		data.detailedShown = true;
 
+		for (const line of lines) {
+			line.tooltip.select('#tooltip-bar-detailed')
+				.attr('transform', `translate(${line.xScale(timestamp)},0)`)
+
+			line.tooltip.selectAll('.detailed').style('display', 'block');
+
+			// Store timestamp so that other events (e.g. brushing) can properly re-render bar
+			line.tooltip.detailedTimestamp = timestamp;
+		}
+
+		timeline.tooltip.select('#tooltip-bar-detailed')
+			.attr('transform', `translate(${timeline.xScale(timestamp)},0)`)
+			.style('display', 'block');
+
+		updateTooltipText(timestamp);
+	});
+
+	dispatcher.on('lineTooltipDblClick', () => {
+		data.detailedShown = false;
+
+		for (const line of lines) {
+			line.tooltip.selectAll('.detailed').style('display', 'none');
+		}
+
+		timeline.tooltip.selectAll('.detailed').style('display', 'none');
+
+		updateTooltipText();
 	});
 
 	dispatcher.on('playerSelected', selection => {
@@ -239,6 +266,13 @@ d3.json(DATAFILE)
 		timeline.updateVis();
 
 		updateSVS(selectedPlayer, selectedTeam)
+		if (data.detailedShown) updateTooltipText(lineChart.tooltip.detailedTimestamp);
+	})
+
+	dispatcher.on('propSelected', (propSelection, lineIndex) => {
+		lines[lineIndex].selectedProperty = lineSelect.properties[propSelection]
+		lines[lineIndex].updateVis();
+		if (data.detailedShown) updateTooltipText(lines[lineIndex].tooltip.detailedTimestamp);
 	})
 
 	dispatcher.on('nextPath', lifeCount => {
@@ -256,6 +290,24 @@ d3.json(DATAFILE)
 			playerPaths.data.pathShown = lifeCount - 1
 		playerPaths.updateVis()
 	})
+
+function updateTooltipText(timestamp="") {
+	let tooltipText = "";
+	
+	if (timestamp != "") {
+		tooltipText = `<div><h>${data.timestampFormat(timestamp)}</h><div>`;
+
+			for (const line of lines) {
+				const index = line.bisectTime(line.dataOverTime, timestamp, 1);
+				const d = line.dataOverTime[index];
+
+				// Add info to detailed tooltip for each line chart
+				tooltipText += `<div>${data.LinePropLabels[line.selectedProperty]}: ${d.val}</div>`
+			}
+	}
+
+	lineSelect.tooltip.html(tooltipText);
+}
 
 function updateSVS(selectedPlayer = "", selectedTeam = ""){
 	let playerData = data[data.teams[selectedTeam]][data.players[selectedPlayer]]
