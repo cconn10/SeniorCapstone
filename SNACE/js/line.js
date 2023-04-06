@@ -5,7 +5,7 @@ class LineSimple {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 140,
-            margin: { top: 15, bottom: 25, right: 50, left: 50 }
+            margin: { top: 40, bottom: 25, right: 50, left: 50 }
         }
         
         this.dispatcher = _dispatcher;
@@ -58,8 +58,13 @@ class LineSimple {
 
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
+            .tickFormat(d3.timeFormat("%M:%S"))
+            .tickSizeOuter(0)
+
         vis.yAxis = d3.axisLeft(vis.yScale)
-            .ticks(7);
+            .ticks(7)
+            .tickSizeOuter(0)
+            .tickSizeInner(3)
 
         // Append x-axis group and move it to the bottom of the chart
         vis.xAxisG = vis.chart.append('g')
@@ -89,13 +94,15 @@ class LineSimple {
             .attr('height', vis.height)
             .attr('x', 0)
             .attr('y', 0)
-            .attr('fill', 'gray')
+            .attr('fill', 'lightgray')
             .attr('display', 'none');
 
         vis.tooltip.append('circle')
             .attr('class', 'tooltip-circle hover')
             .attr('id', 'tooltip-circle-hover')
-            .attr('r', 3)
+            .attr('r', 4)
+            .attr('fill', '#f8f8f8')
+            .attr('stroke', 'gray')
             .attr('display', 'none');
 
         vis.tooltip.append('rect')
@@ -111,6 +118,7 @@ class LineSimple {
         vis.tooltip.append('text')
             .attr('class', 'tooltip-text hover')
             .attr('id', 'tooltip-text-hover')
+            .attr('fill', '#f8f8f8')
             .attr('display', 'none');
         
         vis.properties = Object.getOwnPropertyNames(vis.data[vis.data.teams[0]][vis.data.players[0]][vis.data.timestampStrings[0]]);

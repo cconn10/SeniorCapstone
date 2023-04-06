@@ -5,12 +5,12 @@ body {
     color: #f8f8f8
 }
 a {
-    fill: #006eff;
+    fill: #6495ed;
     text-decoration: underline;
 }
 
 a:hover {
-    fill: #004299;
+    fill: #3674e7;
 }
 .app-bar {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -53,10 +53,38 @@ a:hover {
     justify-self: start;
 }
 
+#tooltip-info {
+    font-size: 12px
+}
+
 #detailed-tooltip {
     grid-row: line3 / end;
     grid-column: start / line2;
     margin: 20px 0 20px 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.detailed-tooltip-label {
+    font-size: 16px;
+    text-align: center;
+    margin: 0px;
+}
+
+.detailed-tooltip-value {
+    font-size: 18px;
+    color: #DE6C83;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.detailed-tooltip-timestamp {
+    font-size: 18px;
+    text-align: center;
+    padding: 10px 0;
+    border-top: 3px solid #ECB0E1;
+    border-bottom: 3px solid #ECB0E1;
 }
 
 #chart-selections {
@@ -82,8 +110,33 @@ select {
     border-color: #f8f8f8;
 }
 
+
+/* width */
+select::-webkit-scrollbar {
+    width: 7px;
+    border-radius: 10px;
+  }
+  
+  /* Track */
+select::-webkit-scrollbar-track {
+    background: #545454;
+  }
+  
+  /* Handle */
+select::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+select::-webkit-scrollbar-thumb:hover {
+    background: #999;
+    border-radius: 10px;
+  }
+  
 select option, select optgroup {
     border: 1px solid #f8f8f8;
+    border-radius: 5px;
     color: #f8f8f8;
     background-color: #545454;
 }

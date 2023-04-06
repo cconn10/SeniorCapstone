@@ -4,7 +4,7 @@ class Timeline {
 			parentElement: _config.parentElement,
 			containerWidth: _config.containerWidth || 500,
 			containerHeight: _config.containerHeight || 140,
-			margin: { top: 5, bottom: 45, right: 50, left: 50 }
+			margin: { top: 20, bottom: 45, right: 50, left: 50 }
         }
 		
 		this.dispatcher = _dispatcher;
@@ -47,7 +47,8 @@ class Timeline {
 
         // Initialize axes - NOTE: no yAxis drawn
         vis.xAxis = d3.axisBottom(vis.xScale)
-			.tickFormat(d3.timeFormat("%M:%S"));
+			.tickFormat(d3.timeFormat("%M:%S"))
+            .tickSizeOuter(0)
 
 		// Append x-axis group and move it to the bottom of the chart
 		vis.xAxisG = vis.chart.append('g')
@@ -70,7 +71,7 @@ class Timeline {
 
 		// Initialize brush component
 		vis.brush = d3.brushX()
-			.extent([[0, 0], [vis.width, vis.height - 1]])
+			.extent([[0, 0], [vis.width, vis.height]])
 			.on('brush', function({selection}, event) {
 				if (selection) vis.brushed(selection, event);
 			})
@@ -171,20 +172,20 @@ class Timeline {
 			.data(vis.deaths)
 			.join('text')
 				.attr('class', 'fa toggleIcon deathIcon')
-				.attr('x', d => vis.xScale(d) - 6)
+				.attr('x', d => vis.xScale(d) - 7)
 				.attr('y', ((2 * vis.height) / 3))
 				.attr('fill', '#DE6C83')
-				.attr('font-size', '12px')
+				.attr('font-size', '14px')
 				.text('\uf54c')
 
 		vis.chart.selectAll('.finalBlowIcon')
 			.data(vis.finalBlows)
 			.join('text')
 				.attr('class', 'fa toggleIcon finalBlowIcon')
-				.attr('x', d => vis.xScale(d) - 6)
+				.attr('x', d => vis.xScale(d) - 7)
 				.attr('y', (vis.height / 3))
 				.attr('fill', '#DE6C83')
-				.attr('font-size', '12px')
+				.attr('font-size', '14px')
 				.text('\uf05b')
 					
 		//TODO: Add translucent blocks for respawn after each death
