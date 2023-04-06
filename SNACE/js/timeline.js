@@ -100,8 +100,10 @@ class Timeline {
         vis.lives = []
 
         let currentLife = []
+		let parseTime = d3.timeFormat("%H:%M:%S")
 
-        for(const timestampString of vis.data.timestampStrings){
+        for(const timestamps of vis.data.timestamps){
+			let timestampString = parseTime(timestamps)
             let x = +vis.data[vis.selectedTeam][vis.selectedPlayer][timestampString]['pos_x']
             let z = +vis.data[vis.selectedTeam][vis.selectedPlayer][timestampString]['pos_z']
 
@@ -200,8 +202,6 @@ class Timeline {
 		// 		.attr('fill', 'black')
 		// 		.attr('opacity', '0.2')
 
-		console.log(vis.lives)
-
 		vis.chart.selectAll('.lifeStart')
 			.data(vis.lives)
 			.join('rect')
@@ -226,8 +226,6 @@ class Timeline {
 
 		// Update axis
 		vis.xAxisG.call(vis.xAxis);
-
-		console.log(vis.xAxis)
 		
 		// Update the brush and define a default position
 		// TODO: change default position to something meaningful? Maybe first round?
