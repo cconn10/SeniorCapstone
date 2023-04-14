@@ -11,9 +11,9 @@
 #### Statistic Selection
 ![Statistic Selection](./UserDocsImages/SelectionBoxes.PNG)
 #### Hovering
-![Line Charts](./UserDocsImages/Line Charts.PNG)
+![Line Charts](./UserDocsImages/LineHover.gif)
 #### Set Marker
-![Line Charts](./UserDocsImages/Line Charts.PNG)
+![Line Charts](./UserDocsImages/Markers.gif)
 
 ### Timeline
 
