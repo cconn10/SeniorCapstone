@@ -4,6 +4,10 @@
 #### Noah Shremshock shremsnt@mail.uc.edu
 #### Advisor - Jillian Aurisano aurisajm@ucmail.uc.edu
 
+## Abstract
+
+Our project aims to fill a void in collegiate Overwatch esports by providing a useful and usable tool for data visualization and analysis. This tool will be web-based and highly accessible, with a focus on user experience. Players and analysts can use graphical & spatial visualization of game data to gain insights and improve their play beyond what is possible with simple replay footage.
+
 ## Table of Contents
 <details>
  <summary>
