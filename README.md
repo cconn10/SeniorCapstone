@@ -11,7 +11,7 @@ Our project aims to fill a void in collegiate Overwatch esports by providing a u
 ## Table of Contents
 <details>
  <summary>
-  <a href="https://github.com/cconn10/SeniorCapstone/wiki/Appendix">Home</a>
+  <a href="https://github.com/cconn10/SeniorCapstone/wiki">Home</a>
  </summary>
  <ul>
   <li>
@@ -30,6 +30,36 @@ Our project aims to fill a void in collegiate Overwatch esports by providing a u
   </li>
   <li>
    <a href="https://github.com/cconn10/SeniorCapstone/wiki/Project-Description#goal-statement">Goal Statement</a>
+  </li>
+ </ul>
+</details>
+
+<details>
+ <summary>
+  <a href="https://github.com/cconn10/SeniorCapstone/wiki/User-Manual-&-FAQ">User Manual & FAQ</a>
+ </summary>
+ <ul>
+  <li>
+   <a href="https://github.com/cconn10/SeniorCapstone/wiki/User-Manual-&-FAQ#user-guide">User Guide</a>
+  </li>
+  <li>
+   <a href="https://github.com/cconn10/SeniorCapstone/wiki/User-Manual-&-FAQ#faq">Frequently Asked Questions</a>
+  </li>
+ </ul>
+</details>
+
+<a href="https://github.com/cconn10/SeniorCapstone/wiki/Poster">Poster</a>
+
+<details>
+ <summary>
+  <a href="https://github.com/cconn10/SeniorCapstone/wiki/Professional-Biographies">Professional Biographies</a>
+ </summary>
+ <ul>
+  <li>
+   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Professional-Biographies#colin-conn---conncfmailucedu">Colin</a>
+  </li>
+  <li>
+   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Professional-Biographies#noah-shremshock---shremsntmailucedu">Noah</a>
   </li>
  </ul>
 </details>
@@ -71,38 +101,6 @@ Our project aims to fill a void in collegiate Overwatch esports by providing a u
  </ul>
 </details>
 
-<a href="https://github.com/cconn10/SeniorCapstone/wiki/Slideshow">Slideshow</a>
-
-<details>
- <summary>
-  <a href="https://github.com/cconn10/SeniorCapstone/wiki/Self-Assessment-Essays">Self Assessment Essays</a>
- </summary>
- <ul>
-  <li>
-   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Self-Assessment-Essays#colin-conn">Colin</a>
-  </li>
-  <li>
-   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Self-Assessment-Essays#noah-shremshock">Noah</a>
-  </li>
- </ul>
-</details>
-
-<details>
- <summary>
-  <a href="https://github.com/cconn10/SeniorCapstone/wiki/Professional-Biographies">Professional Biographies</a>
- </summary>
- <ul>
-  <li>
-   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Professional-Biographies#colin-conn---conncfmailucedu">Colin</a>
-  </li>
-  <li>
-   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Professional-Biographies#noah-shremshock---shremsntmailucedu">Noah</a>
-  </li>
- </ul>
-</details>
-
-<a href="https://github.com/cconn10/SeniorCapstone/wiki/Budget">Budget</a>
-
 <details>
  <summary>
   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Fall-Progress-Update">Fall Progress Update</a>
@@ -119,5 +117,40 @@ Our project aims to fill a void in collegiate Overwatch esports by providing a u
   </li>
  </ul>
 </details>
+
+<a href="https://github.com/cconn10/SeniorCapstone/wiki/Slideshow">Fall Presentation</a>
+
+<a href="https://github.com/cconn10/SeniorCapstone/wiki/Spring-Final-Presentation">Spring Presentation</a>
+
+<details>
+ <summary>
+  <a href="https://github.com/cconn10/SeniorCapstone/wiki/Initial-Self-Assessment-Essays">Initial Self Assessment Essays</a>
+ </summary>
+ <ul>
+  <li>
+   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Initial-Self-Assessment-Essays#colin-conn">Colin</a>
+  </li>
+  <li>
+   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Initial-Self-Assessment-Essays#noah-shremshock">Noah</a>
+  </li>
+ </ul>
+</details>
+<details>
+ <summary>
+  <a href="https://github.com/cconn10/SeniorCapstone/wiki/Final-Self-Assessment-Essays">Final Self Assessment Essays</a>
+ </summary>
+ <ul>
+  <li>
+   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Final-Self-Assessment-Essays#colin-conn">Colin</a>
+  </li>
+  <li>
+   <a href="https://github.com/cconn10/SeniorCapstone/wiki/Final-Self-Assessment-Essays#noah-shremshock">Noah</a>
+  </li>
+ </ul>
+</details>
+
+<a href="https://github.com/cconn10/SeniorCapstone/wiki/Budget">Budget</a>
+
+<a href="https://github.com/cconn10/SeniorCapstone/wiki/Summary-of-Hours">Summary of Hours</a>
 
 <a href="https://github.com/cconn10/SeniorCapstone/wiki/Appendix">Appendix</a>
