@@ -118,6 +118,8 @@ Our project aims to fill a void in collegiate Overwatch esports by providing a u
  </ul>
 </details>
 
+<a href="https://github.com/cconn10/SeniorCapstone/wiki/Test-Plan">Test Plan</a>
+
 <a href="https://github.com/cconn10/SeniorCapstone/wiki/Slideshow">Fall Presentation</a>
 
 <a href="https://github.com/cconn10/SeniorCapstone/wiki/Spring-Final-Presentation">Spring Presentation</a>
